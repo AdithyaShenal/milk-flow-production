@@ -1,0 +1,30 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_ID }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push
+        run: |
+          docker build -t adithyashenal/multi-frontend ./frontend
+          docker build -t adithyashenal/multi-nginx ./nginx
+          docker build -t adithyashenal/multi-server ./server
+          docker build -t adithyashenal/multi-worker ./worker
+          docker push adithyashenal/multi-frontend
+          docker push adithyashenal/multi-nginx
+          docker push adithyashenal/multi-server
+          docker push adithyashenal/multi-worker
