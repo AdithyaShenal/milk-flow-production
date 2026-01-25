@@ -1,8 +1,8 @@
 import MapComponent from "./MapComponent";
-import type { Route } from "./RoutingPage";
 import { useState } from "react";
 import RouteCard from "../components/map/RouteCard";
 import useGetHistory from "../hooks/useGetHistory";
+import type { Route } from "../hooks/useGenerateRoutes";
 
 const RouteHistoryPage = () => {
   const [mapRoute, setMapRoute] = useState<Route>();

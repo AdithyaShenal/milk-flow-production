@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import L from "leaflet";
 import RoutingMachine from "../components/RoutingMachine";
-import type { Route } from "./RoutingPage";
 import useGetDepotLocation from "../hooks/useGetDepotLocation";
+import type { Route } from "../hooks/useGenerateRoutes";
 
 interface Props {
   route?: Route;

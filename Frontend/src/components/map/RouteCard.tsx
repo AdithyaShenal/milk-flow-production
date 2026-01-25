@@ -1,4 +1,4 @@
-import type { Route } from "../../pages/RoutingPage";
+import type { Route } from "../../hooks/useGenerateRoutes";
 
 interface Props {
   props: Route;

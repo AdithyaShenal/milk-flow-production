@@ -5,8 +5,8 @@ import { useState } from "react";
 import MapModal from "../components/MapModal";
 import UpdateFarmer from "../components/Modals/UpdateFarmer";
 import DeleteFarmer from "../components/Modals/DeleteFarmer";
-import type { FarmerProps } from "../hooks/useGetProductions";
 import FullLoadingPage from "../components/Loading/FullLoadingPage";
+import type { Farmer } from "../hooks/useGenerateRoutes";
 
 export interface Coords {
   lat: number;
@@ -22,8 +22,8 @@ const defaultValues = {
 type FarmerModalState =
   | { type: null }
   | { type: "map"; data: Coords }
-  | { type: "update"; data: FarmerProps }
-  | { type: "delete"; data: FarmerProps }
+  | { type: "update"; data: Farmer }
+  | { type: "delete"; data: Farmer }
   | { type: "add" };
 
 const FarmerPage = () => {
@@ -43,10 +43,10 @@ const FarmerPage = () => {
   const openMapModal = (coords: Coords) =>
     setModal({ type: "map", data: coords });
 
-  const openUpdateModal = (farmer: FarmerProps) =>
+  const openUpdateModal = (farmer: Farmer) =>
     setModal({ type: "update", data: farmer });
 
-  const openDeleteModal = (farmer: FarmerProps) =>
+  const openDeleteModal = (farmer: Farmer) =>
     setModal({ type: "delete", data: farmer });
 
   const closeModal = () => setModal({ type: null });

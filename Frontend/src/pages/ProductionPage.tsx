@@ -1,12 +1,11 @@
 import { MapPin, Lock } from "lucide-react";
-import useGetProductions, {
-  type ProductionProps,
-} from "../hooks/useGetProductions";
+import useGetProductions from "../hooks/useGetProductions";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import type { Coords } from "./FarmerPage";
 import MapModal from "../components/MapModal";
 import HoldModal from "../components/Modals/Productions/HoldModal";
+import type { Production } from "../hooks/useGenerateRoutes";
 
 const defaultValues = {
   search: "",
@@ -18,8 +17,8 @@ const defaultValues = {
 type ProductionModalState =
   | { type: null }
   | { type: "map"; data: Coords }
-  | { type: "hold"; data: ProductionProps }
-  | { type: "unhold"; data: ProductionProps };
+  | { type: "hold"; data: Production }
+  | { type: "unhold"; data: Production };
 
 const ProductionPage = () => {
   const [modal, setModal] = useState<ProductionModalState>({ type: null });
@@ -44,10 +43,10 @@ const ProductionPage = () => {
   const openMapModal = (coords: Coords) =>
     setModal({ type: "map", data: coords });
 
-  const openHoldModal = (production: ProductionProps) =>
+  const openHoldModal = (production: Production) =>
     setModal({ type: "hold", data: production });
 
-  const openUnholdModal = (production: ProductionProps) =>
+  const openUnholdModal = (production: Production) =>
     setModal({ type: "unhold", data: production });
 
   const closeModal = () => setModal({ type: null });

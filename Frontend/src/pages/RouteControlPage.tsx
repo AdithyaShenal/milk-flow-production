@@ -1,10 +1,10 @@
 import MapComponent from "./MapComponent";
-import type { Route } from "./RoutingPage";
 import { useState } from "react";
 import RouteCardAdvance from "../components/map/RouteCardAdvance";
 import useGetDispatchRoutes from "../hooks/useGetDispatchRoutes";
 import useGetInProgressRoutes from "../hooks/useGetInProgressRoutes";
 import useDeleteRoute from "../hooks/useDeleteRoute";
+import type { Route } from "../hooks/useGenerateRoutes";
 
 const RouteControlPage = () => {
   const [mapRoute, setMapRoute] = useState<Route>();
