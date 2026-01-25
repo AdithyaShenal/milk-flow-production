@@ -20,11 +20,12 @@ jobs:
 
       - name: Build and Push
         run: |
-          docker build -t adithyashenal/multi-frontend ./frontend
-          docker build -t adithyashenal/multi-nginx ./nginx
-          docker build -t adithyashenal/multi-server ./server
-          docker build -t adithyashenal/multi-worker ./worker
-          docker push adithyashenal/multi-frontend
-          docker push adithyashenal/multi-nginx
-          docker push adithyashenal/multi-server
-          docker push adithyashenal/multi-worker
+          docker build -t adithyashenal/milkflow-frontend ./Frontend
+          docker build -t adithyashenal/milkflow-nginx ./nginx
+          docker build -t adithyashenal/milkflow-api ./Backend
+          docker build -t adithyashenal/milkflow-osrm ./Osrm
+
+          docker push adithyashenal/milkflow-frontend
+          docker push adithyashenal/milkflow-nginx
+          docker push adithyashenal/milkflow-api
+          docker push adithyashenal/milkflow-osrm
