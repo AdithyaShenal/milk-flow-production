@@ -1,0 +1,80 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap");
+
+@import "tailwindcss";
+@plugin "daisyui";
+@plugin "daisyui" {
+  /* themes: light --default, dark --prefersdark, business ; */
+  themes: corporate --default, business --prefersdark;
+}
+
+/* custom style (ignore the error on theme) */
+@theme {
+  --font-momo: "Momo Signature", cursive;
+  --font-quicksand: "Quicksand", sans-serif;
+}
+
+@import "leaflet/dist/leaflet.css";
+@import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
+
+@layer base {
+  body {
+    font-family: "Roboto", sans-serif;
+    /* font-family: "Quicksand", sans-serif; */
+  }
+
+  h1 {
+    @apply text-6xl font-bold;
+  }
+
+  h2 {
+    @apply text-5xl font-bold;
+  }
+
+  h3 {
+    @apply text-4xl font-bold;
+  }
+
+  h4 {
+    @apply text-3xl font-bold;
+  }
+
+  h5 {
+    @apply text-2xl font-bold;
+  }
+
+  h6 {
+    @apply text-xl font-bold;
+  }
+}
+
+.container {
+  width: 100%;
+
+  @media (width >= 30rem /* 448px */) {
+    max-width: 26rem /* 448px */;
+  }
+  @media (width >= 40rem /* 640px */) {
+    max-width: 40rem /* 640px */;
+  }
+  @media (width >= 48rem /* 768px */) {
+    max-width: 48rem /* 768px */;
+  }
+  @media (width >= 64rem /* 1024px */) {
+    max-width: 64rem /* 1024px */;
+  }
+  @media (width >= 80rem /* 1280px */) {
+    max-width: 80rem /* 1280px */;
+  }
+  @media (width >= 105rem /* 1280px */) {
+    max-width: 85rem /* 1280px */;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

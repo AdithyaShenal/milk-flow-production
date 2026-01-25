@@ -1,0 +1,5 @@
+FROM osrm/osrm-backend:v5.25.0
+
+WORKDIR /build
+
+CMD ["osrm-routed", "--algorithm", "ch", "--port", "6000", "/build/sri-lanka-latest.osrm"]

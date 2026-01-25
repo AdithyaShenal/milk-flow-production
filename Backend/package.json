@@ -1,0 +1,41 @@
+{
+  "name": "mclros-backend",
+  "version": "1.0.0",
+  "description": "Milk Collection Logistics &amp; Route Optimization System - This our final year group project - University of Ruhuna Srilanka - Bachelors of Computer Science (BCS)",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdithyaShenal/MCLROS-Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/AdithyaShenal/MCLROS-Backend/issues"
+  },
+  "homepage": "https://github.com/AdithyaShenal/MCLROS-Backend#readme",
+  "dependencies": {
+    "axios": "^1.13.2",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "config": "^4.1.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.19",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "helmet": "^8.1.0",
+    "joi": "^18.0.2",
+    "joi-objectid": "^4.0.2",
+    "jsonwebtoken": "^9.0.2",
+    "lodash": "^4.17.21",
+    "mongoose": "^9.0.0",
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.11"
+  }
+}

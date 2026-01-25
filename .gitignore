@@ -1,0 +1,17 @@
+#readme files
+readme.md
+
+# Node modules everywhere
+**/node_modules/
+
+# Docker build artifacts
+*.log
+
+# Optional: IDE files
+.vscode/
+.idea/
+*.iml
+
+# OSRM build folder (big binary files)
+Osrm/build/
+*.pbf

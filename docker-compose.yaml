@@ -1,0 +1,53 @@
+services:
+  redis:
+    restart: always
+    image: redis:latest
+
+  nginx:
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+      - frontend
+
+  api:
+    restart: unless-stopped
+    build:
+      dockerfile: Dockerfile
+      context: ./Backend
+    environment:
+      PORT: 5000
+      MONGO_URI: mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority
+      NODE_ENV: development
+      JWT_SECRET_KEY: MY_SECRET_JWT_KEY
+      CVRP_SERVICE_URL: http://cvrp:8080
+    depends_on:
+      - redis
+
+  frontend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./Frontend
+    environment:
+      OSRM_URL: http://osrm:6000
+
+  cvrp:
+    build:
+      dockerfile: Dockerfile
+      context: ./CVRP-service
+    environment:
+      OSRM_URL: http://osrm:6000
+
+  osrm:
+    build:
+      dockerfile: Dockerfile
+      context: ./Osrm
+    container_name: osrm
+    ports:
+      - "6000:6000"
+    volumes:
+      - ./osrm/build:/build
