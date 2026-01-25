@@ -24,8 +24,10 @@ jobs:
           docker build -t adithyashenal/milkflow-nginx ./nginx
           docker build -t adithyashenal/milkflow-api ./Backend
           docker build -t adithyashenal/milkflow-osrm ./Osrm
+          docker build -t adithyashenal/milkflow-cvrp ./CVRP-service
 
           docker push adithyashenal/milkflow-frontend
           docker push adithyashenal/milkflow-nginx
           docker push adithyashenal/milkflow-api
           docker push adithyashenal/milkflow-osrm
+          docker push adithyashenal/milkflow-cvrp
