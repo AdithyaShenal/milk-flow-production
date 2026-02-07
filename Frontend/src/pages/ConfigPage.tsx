@@ -56,7 +56,9 @@ const ConfigPage = () => {
       )}
 
       <div>
-        <p className="text-lg font-semibold text-gray-700">Depot Location</p>
+        <p className="text-lg font-semibold text-base-content">
+          Depot Location
+        </p>
         <p className="text-sm text-gray-500">
           Pick the depot location by clicking or dragging the pin
         </p>
@@ -75,7 +77,7 @@ const ConfigPage = () => {
           )}
         </div>
 
-        <div className="flex flex-col rounded-sm border border-slate-300 p-4 bg-base-100">
+        <div className="flex flex-col rounded-sm border border-base-300 p-4 bg-base-100">
           <div className="space-y-2">
             <label className="text-sm font-medium text-gray-600">
               Coordinates

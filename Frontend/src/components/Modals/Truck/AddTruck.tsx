@@ -49,7 +49,7 @@ const AddTruck = ({ open, onClose, title }: Props) => {
   if (!open) return null;
 
   return (
-    <dialog className="modal modal-open">
+    <dialog className="modal modal-open ">
       {isError && (
         <div role="alert" className="alert alert-error">
           <svg
@@ -69,7 +69,7 @@ const AddTruck = ({ open, onClose, title }: Props) => {
         </div>
       )}
       <form
-        className="modal-box max-w-3xl w-full p-0"
+        className="modal-box max-w-3xl w-full p-0 border border-base-300"
         onSubmit={handleSubmit(submitHandler)}
       >
         {/* Header */}

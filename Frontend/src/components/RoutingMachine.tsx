@@ -62,7 +62,7 @@ const createRoutineMachineLayer = (props: RoutingMachineProps) => {
     },
 
     router: L.Routing.osrmv1({
-      serviceUrl: "https://router.project-osrm.org/route/v1",
+      serviceUrl: "/osrm/route/v1",
       profile: "car", // realistic vehicle profile
       geometryPrecision: 8, // precise enough
       overview: "full", // full path geometry
@@ -71,20 +71,6 @@ const createRoutineMachineLayer = (props: RoutingMachineProps) => {
       alternatives: true, // true if you want multiple route options
       continueStraight: true, // avoid weird zigzags
     }),
-
-    // router: L.Routing.mapbox(MAPBOX_TOKEN, {
-    //   profile: "mapbox/driving-traffic",
-    //   alternatives: true,
-    //   steps: true,
-    //   geometries: "polyline6",
-    //   overview: "full",
-    //   annotations: ["duration", "distance"],
-    //   voiceInstructions: false,
-    //   bannerInstructions: false,
-    //   // allowUTurn: true,
-    //   // roundabout_exits: true,
-    //   continue_straight: true,
-    // }),
   });
 
   return instance;

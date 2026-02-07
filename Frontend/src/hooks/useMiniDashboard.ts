@@ -3,13 +3,18 @@ import type { APIError } from "./useGetProductions";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../services/apiClient";
 
+interface Props {
+  totalCapacity: number;
+  route: number;
+  totalVolume: number;
+}
+
 interface MiniDashboardProps {
+  autoResolvability: boolean;
   totalVolume: number;
   availableCapacity: number;
-  autoResolvability: boolean;
   routeWiseResolvability: boolean;
-  autoClusterization: boolean;
-  routeWiseClusterization: boolean;
+  capacityMap: [Props];
 }
 
 const useMiniDashboard = () => {

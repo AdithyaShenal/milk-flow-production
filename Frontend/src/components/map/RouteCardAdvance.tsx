@@ -12,8 +12,9 @@ const RouteCard = ({ props, onClickRoute, onClickDelete }: Props) => {
       className="
         mx-2 my-3
         rounded-sm
-        border border-gray-200
-        bg-white
+        border 
+        border-base-300
+        bg-base-200
         p-4
         transition-all
         hover:border-gray-400
@@ -23,24 +24,24 @@ const RouteCard = ({ props, onClickRoute, onClickDelete }: Props) => {
       <div className="flex items-start justify-between mb-3">
         <div>
           {/* License number (Primary) */}
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-base-content">
             {props.license_no}
           </h3>
 
           {/* Truck model + Route number (Secondary, faded) */}
-          <div className="text-xs text-gray-500 mt-0.5">
+          <div className="text-xs text-base-content mt-0.5">
             {props.model} · Route {props.route}
           </div>
         </div>
 
         {/* Status */}
-        <span className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded-md">
-          {props.status}
+        <span className="text-xs font-medium text-blue-600 bg-base-300 px-2 py-1 rounded-md">
+          {props.status ?? "Fresh"}
         </span>
       </div>
 
       {/* Divider */}
-      <div className="h-px bg-gray-200/80 mb-3" />
+      <div className="h-px bg-base-300 mb-3" />
 
       {/* Details */}
       <div className="space-y-2 text-sm">
@@ -61,7 +62,7 @@ const RouteCard = ({ props, onClickRoute, onClickDelete }: Props) => {
 
         <button
           onClick={() => onClickDelete(props)}
-          className="btn btn-error btn-sm text-white"
+          className="btn btn-error btn-sm text-base-content"
         >
           Delete
         </button>
@@ -77,9 +78,9 @@ const InfoRow = ({
   label: string;
   value: string | number;
 }) => (
-  <div className="flex justify-between text-gray-500">
+  <div className="flex justify-between text-base-content">
     <span>{label}</span>
-    <span className="font-medium text-gray-800">{value}</span>
+    <span className="font-medium text-base-content">{value}</span>
   </div>
 );
 

@@ -26,8 +26,8 @@ const DeleteFarmer = ({
   if (!open) return null;
 
   return (
-    <dialog className="modal modal-open">
-      <form className="modal-box max-w-3xl w-full p-0">
+    <dialog className="modal modal-open ">
+      <form className="modal-box max-w-3xl w-full p-0 border border-base-300">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4">
           <h3 className="font-semibold text-lg">{title}</h3>

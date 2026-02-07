@@ -36,10 +36,10 @@ const RouteHistoryPage = () => {
 
       <div className="flex w-full h-[600px] md:h-[600px] gap-4">
         {/* Routes List */}
-        <div className="w-full md:w-1/2 h-full ring-1 ring-slate-200 rounded-xs bg-white flex flex-col">
+        <div className="w-full md:w-1/2 h-full ring-1 ring-base-300 rounded-xs bg-base-100 flex flex-col">
           {/* Header + Filter */}
-          <div className="flex flex-col md:flex-row items-center justify-between p-2 ml-2 border-b border-slate-200">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-700">
+          <div className="flex flex-col md:flex-row items-center justify-between p-2 ml-2 border-b border-base-300">
+            <p className="text-xs font-semibold uppercase tracking-wide text-base-content">
               History
             </p>
           </div>
@@ -63,7 +63,7 @@ const RouteHistoryPage = () => {
         </div>
 
         {/* Map */}
-        <div className="w-full md:w-1/2 h-full ring-1 ring-slate-200 rounded-xs bg-white overflow-hidden">
+        <div className="w-full md:w-1/2 h-full ring-1 ring-base-300 rounded-xs bg-base-300 overflow-hidden">
           <MapComponent route={mapRoute} />
         </div>
       </div>

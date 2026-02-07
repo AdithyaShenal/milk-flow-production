@@ -15,7 +15,7 @@ const MapModal = ({ open, onClose, title, coords }: Props) => {
 
   return (
     <dialog className="modal modal-open">
-      <div className="modal-box max-w-3xl w-full overflow-auto">
+      <div className="modal-box max-w-3xl w-full overflow-auto border border-base-300">
         {title && <h3 className="font-bold text-lg my-2">{title}</h3>}
         {/* Simple Map */}
         <div className="h-100">

@@ -5,7 +5,135 @@
 @plugin "daisyui";
 @plugin "daisyui" {
   /* themes: light --default, dark --prefersdark, business ; */
-  themes: corporate --default, business --prefersdark;
+  themes:
+    industrial-aws --default,
+    industrial-aws-dark --prefersdark;
+}
+
+@plugin "daisyui/theme" {
+  name: "industrial-aws";
+  default: true;
+  prefersdark: false;
+  color-scheme: light;
+
+  /* 🎨 Base (Warm, Near-White Palette) */
+  --color-base-100: oklch(
+    99% 0.003 60
+  ); /* Softest warm white - main background */
+  /* --color-base-200: oklch(97% 0.0035 42); */
+  --color-base-200: oklch(97% 0.003 40);
+
+  --color-base-300: oklch(
+    93% 0.008 50
+  ); /* Light warm gray - borders/dividers */
+  --color-base-content: oklch(
+    20% 0.015 240
+  ); /* Rich dark text for readability */
+
+  /* 🔵 Primary (AWS Blue - professional) */
+  --color-primary: oklch(52% 0.22 250);
+  --color-primary-content: oklch(98% 0.01 250);
+
+  /* 🟦 Secondary (Steel Blue - modern DevOps) */
+  --color-secondary: oklch(60% 0.12 220);
+  --color-secondary-content: oklch(98% 0.01 220);
+
+  /* 🟠 Accent (AWS Orange - warm accent) */
+  --color-accent: oklch(68% 0.18 50);
+  --color-accent-content: oklch(15% 0.03 50);
+
+  /* ⚫ Neutral (Rich Graphite) */
+  --color-neutral: oklch(40% 0.02 240);
+  --color-neutral-content: oklch(98% 0.01 240);
+
+  /* ℹ️ Info (Cloud Blue) */
+  --color-info: oklch(65% 0.15 230);
+  --color-info-content: oklch(98% 0.01 230);
+
+  /* ✅ Success (Fresh Green) */
+  --color-success: oklch(60% 0.14 140);
+  --color-success-content: oklch(98% 0.01 140);
+
+  /* ⚠️ Warning (Warm Amber) */
+  --color-warning: oklch(75% 0.18 80);
+  --color-warning-content: oklch(20% 0.03 80);
+
+  /* ❌ Error (Professional Red) */
+  --color-error: oklch(58% 0.22 30);
+  --color-error-content: oklch(98% 0.01 30);
+
+  /* 🧩 Radius (Modern Enterprise UI) */
+  --radius-selector: 0.75rem;
+  --radius-field: 0.4rem;
+  --radius-box: 0.75rem;
+  --radius-btn: 0.5rem;
+  --radius-badge: 0.5rem;
+
+  /* 📏 Sizes */
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  /* 🧱 Borders */
+  --border: 1px;
+
+  /* 🧊 Effects (Subtle depth for layered UI) */
+  --depth: 0.02;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "industrial-aws-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: dark;
+
+  /* Base Colors */
+  --color-base-100: oklch(17% 0.012 245); /* Deepest dark - main background */
+  --color-base-200: oklch(21% 0.016 245); /* Mid dark - cards and panels */
+  --color-base-300: oklch(30% 0.02 245); /* Lighter dark - borders/dividers */
+  --color-base-content: oklch(93% 0.01 245);
+
+  /* 🔵 Primary */
+  --color-primary: oklch(72% 0.29 245);
+  --color-primary-content: oklch(98% 0.01 245);
+
+  /* 🟦 Secondary */
+  --color-secondary: oklch(70% 0.24 215);
+  --color-secondary-content: oklch(98% 0.01 215);
+
+  /* 🟠 Accent */
+  --color-accent: oklch(76% 0.26 45);
+  --color-accent-content: oklch(15% 0.02 45);
+
+  /* ⚫ Neutral */
+  --color-neutral: oklch(27% 0.015 240);
+  --color-neutral-content: oklch(94% 0.01 240);
+
+  --color-info: oklch(74% 0.26 220);
+  --color-info-content: oklch(15% 0.01 220);
+
+  --color-success: oklch(72% 0.28 150);
+  --color-success-content: oklch(15% 0.01 150);
+
+  --color-warning: oklch(80% 0.27 75);
+  --color-warning-content: oklch(15% 0.02 75);
+
+  --color-error: oklch(68% 0.28 25);
+  --color-error-content: oklch(98% 0.01 25);
+
+  --radius-selector: 0.75rem;
+  --radius-field: 0.4rem;
+  --radius-box: 0.75rem;
+  --radius-btn: 0.5rem;
+  --radius-badge: 0.5rem;
+
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+
+  --border: 1px;
+
+  --depth: 0.05;
+  --noise: 0;
 }
 
 /* custom style (ignore the error on theme) */

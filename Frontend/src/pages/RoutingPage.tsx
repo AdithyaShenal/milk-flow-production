@@ -47,7 +47,7 @@ const RoutingPage = () => {
         <p className="font-semibold text-sm">Generate Optimized Routes</p>
 
         <MiniDashboard />
-        <div className="flex flex-wrap items-center gap-3 border border-base-300 bg-base-200 px-4 py-3 rounded-sm">
+        <div className="flex flex-wrap items-center gap-3 border border-base-300 px-4 py-3 rounded-sm bg-base-200">
           <button className="btn btn-neutral btn-sm" onClick={() => refetch()}>
             {isFetching && (
               <span className="loading loading-spinner loading-xs" />
@@ -60,9 +60,7 @@ const RoutingPage = () => {
             defaultValue=""
             onChange={(e) => setRouteWiseResolve(e.target.value === "route")}
           >
-            <option selected value="auto">
-              Auto Resolve
-            </option>
+            <option value="auto">Auto Resolve</option>
             <option value="route">Route-wise</option>
           </select>
 
@@ -144,8 +142,8 @@ const RoutingPage = () => {
           </div>
 
           {/* Routes Panel */}
-          <div className="flex flex-col border border-slate-300 rounded-sm overflow-y-scroll">
-            <div className="border-b border-slate-300 px-4 py-2">
+          <div className="flex flex-col border border-base-300 rounded-sm overflow-y-scroll">
+            <div className="border-b border-base-300 px-4 py-2">
               <p className="text-xs font-semibold uppercase tracking-wide">
                 Generated Routes
               </p>

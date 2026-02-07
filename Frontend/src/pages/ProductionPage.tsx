@@ -114,7 +114,7 @@ const ProductionPage = () => {
         </select>
 
         {/* Search Button */}
-        <button className="btn" type="submit">
+        <button className="btn btn-neutral" type="submit">
           <span
             className={`${
               (isFetching || isLoading) && "loading"
@@ -172,7 +172,7 @@ const ProductionPage = () => {
       )}
 
       {/* Table */}
-      <div className="overflow-x-auto h-auto w-auto border border-slate-300 rounded-sm">
+      <div className="overflow-x-auto h-auto w-auto border  border-base-300 rounded-sm">
         <table className="table table-md table-pin-rows table-pin-cols">
           <thead>
             <tr>
@@ -189,6 +189,7 @@ const ProductionPage = () => {
           <tbody className="overflow-y-scroll">
             {data?.map((prod) => (
               <tr
+                key={prod._id}
                 className={`hover:bg-base-200 cursor-pointer ${
                   prod.blocked ? "bg-red-100" : ""
                 }`}

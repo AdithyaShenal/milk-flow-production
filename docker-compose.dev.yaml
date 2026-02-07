@@ -16,12 +16,8 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./Backend
-    environment:
-      PORT: 5000
-      MONGO_URI: mongodb+srv://washenal55:washenal_admin@mycluster.ja90lnb.mongodb.net/MCLROS?retryWrites=true&w=majority
-      NODE_ENV: development
-      JWT_SECRET_KEY: MY_SECRET_JWT_KEY
-      CVRP_SERVICE_URL: http://cvrp:8080
+    env_file:
+      - .env
     volumes:
       - /app/node_modules
       - ./Backend:/app
@@ -33,7 +29,7 @@ services:
       dockerfile: Dockerfile.dev
       context: ./Frontend
     ports:
-      - "5173:5173" # 🔥 IMPORTANT
+      - "3000:3000"
     volumes:
       - ./Frontend:/app
       - /app/node_modules

@@ -16,7 +16,7 @@ import configRoutes from "./modules/config/config.routes.js";
 import adminRoutes from "./modules/user/admin/admin.login.js";
 
 // Middleware import
-// import cookieParser from "cookie-parser";
+import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import err from "./middleware/error.js";
 import cors from "cors";
@@ -44,7 +44,7 @@ process.on("unhandledRejection", (err) => {
 //Middlewares
 app.use(morgan("tiny"));
 app.use(express.json());
-// app.use(cookieParser());
+app.use(cookieParser());
 app.use(
   cors({
     origin: [

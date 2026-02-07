@@ -2,7 +2,11 @@ const ThemeController = () => {
   return (
     <>
       <label className="toggle text-base-content">
-        <input type="checkbox" value="business" className="theme-controller" />
+        <input
+          type="checkbox"
+          value="industrial-aws-dark"
+          className="theme-controller"
+        />
 
         <svg
           aria-label="sun"

@@ -15,3 +15,5 @@ readme.md
 # OSRM build folder (big binary files)
 Osrm/build/
 *.pbf
+
+.env

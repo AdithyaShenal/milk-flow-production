@@ -1,10 +1,16 @@
+import { NavLink } from "react-router-dom";
 import ThemeController from "./ThemeController";
+import profileImage from "../assets/images/user_profile.png";
+import useLogout from "../hooks/useLogout";
+import { Info, LogOut, User } from "lucide-react";
 
 const NavBar = () => {
+  const { mutate: logout } = useLogout();
+
   return (
     <>
       {/* Navbar */}
-      <nav className="navbar w-full">
+      <nav className="navbar w-full border-b border-base-300">
         <label
           htmlFor="my-drawer-4"
           aria-label="open sidebar"
@@ -29,10 +35,40 @@ const NavBar = () => {
         <div className="px-4 font-bold">
           Supply & Logistic Management System
         </div>
-        <div className="ml-auto flex justify-center gap-5 mr-2">
+        <div className="ml-auto flex justify-center items-center gap-10 mr-2">
           <ThemeController />
-          <button>Profile</button>
-          <button>Logout</button>
+
+          <div className="dropdown dropdown-end cursor-pointer">
+            <div tabIndex={0} role="button" className="m-1">
+              <div>
+                <div className="avatar avatar-online rounded-full ring-2 border border-base-300 hover:ring-black/50 transition-all duration-300">
+                  <div className="rounded-full">
+                    <img src={profileImage} className="size-11" />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ul className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-md border  border-base-300">
+              <li>
+                <NavLink to="adminProfile">
+                  <User className="size-4" />
+                  Profile
+                </NavLink>
+              </li>
+              <li>
+                <button>
+                  <Info className="size-4" />
+                  Info
+                </button>
+              </li>
+              <li>
+                <button className="text-red-500" onClick={() => logout()}>
+                  <LogOut className="size-4" />
+                  Log out
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
     </>

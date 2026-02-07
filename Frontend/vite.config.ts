@@ -14,15 +14,16 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: "0.0.0.0",
-    port: 5173,
+    host: true,
+    port: 3000,
     strictPort: true,
     watch: {
       usePolling: true,
     },
     hmr: {
+      protocol: "ws",
       host: "localhost",
-      port: 5173,
+      port: 3000,
     },
   },
 });

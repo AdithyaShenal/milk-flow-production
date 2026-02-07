@@ -62,7 +62,7 @@ const AddDriver = ({ open, onClose, title }: Props) => {
         </div>
       )}
       <form
-        className="modal-box max-w-3xl w-full p-0"
+        className="modal-box max-w-3xl w-full p-0 border border-base-300"
         onSubmit={handleSubmit(submitHandler)}
       >
         {/* Header */}

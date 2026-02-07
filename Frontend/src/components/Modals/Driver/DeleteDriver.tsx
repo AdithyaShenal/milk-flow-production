@@ -37,7 +37,7 @@ const DeleteDriver = ({ open, onClose, title, subtitle, driverId }: Props) => {
           <span>{error?.response?.data?.message || error.message}</span>
         </div>
       )}
-      <form className="modal-box max-w-3xl w-full p-0">
+      <form className="modal-box max-w-3xl w-full p-0 border border-base-300">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4">
           <h3 className="font-semibold text-lg">{title}</h3>
