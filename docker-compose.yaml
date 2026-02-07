@@ -8,8 +8,6 @@ services:
     image: adithyashenal/milkflow-nginx
     ports:
       - "80:80"
-    volumes:
-      - ./nginx/default.conf /etc/nginx/conf.d/default.conf
     depends_on:
       - api
       - frontend
