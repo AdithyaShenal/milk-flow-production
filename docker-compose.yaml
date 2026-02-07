@@ -36,3 +36,5 @@ services:
     container_name: osrm
     ports:
       - "6000:6000"
+    volumes:
+      - ./osrm/build:/build
