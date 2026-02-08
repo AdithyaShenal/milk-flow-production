@@ -32,10 +32,10 @@ export const farmerSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
-      length: 4,
+      length: 20,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Farmer = mongoose.model("Farmer", farmerSchema);

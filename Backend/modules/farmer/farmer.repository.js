@@ -1,22 +1,8 @@
 import Farmer from "./farmer.model.js";
 
-// Generate a random 4 digit pin
-function generatePin() {
-  return Math.floor(1000 + Math.random() * 9000).toString();
-}
-
 export async function create(data) {
-  let pin;
-  let exists = true;
-
-  while (exists) {
-    pin = generatePin();
-    exists = await Farmer.exists({ pinNo: pin });
-  }
-
   const farmer = new Farmer({
     ...data,
-    pinNo: pin,
   });
   return await farmer.save();
 }
@@ -45,7 +31,7 @@ export async function update(id, data) {
     { $set: data },
     {
       new: true,
-    }
+    },
   );
 }
 

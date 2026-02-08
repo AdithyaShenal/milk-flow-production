@@ -20,7 +20,7 @@ router.post("/login", async (req, res) => {
 
   const user = await Farmer.findOne({
     pinNo,
-    shortName: shortName.toLowerCase(),
+    shortName: shortName,
   });
 
   if (!user) {
@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
   const token = jwt.sign(
     { _id: user._id },
     process.env.JWT_SECRET || "Mysecret",
-    { expiresIn: "1h" }
+    { expiresIn: "1h" },
   );
 
   // Return token in response body only (no cookies)
@@ -56,7 +56,7 @@ router.get("/me", authFarmer, async (req, res) => {
 // Validation
 const validate = (data) => {
   const schema = Joi.object({
-    pinNo: Joi.string().length(4).required(),
+    pinNo: Joi.string().required(),
     shortName: Joi.string().trim().lowercase().required(),
   });
 

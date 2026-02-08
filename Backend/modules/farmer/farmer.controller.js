@@ -4,12 +4,8 @@ import mongoose from "mongoose";
 import Farmer from "./farmer.model.js";
 
 export async function createFarmer(req, res, next) {
-  try {
-    const farmer = await farmerService.createFarmer(req.body);
-    successResponse(res, farmer, 200);
-  } catch (err) {
-    next(err);
-  }
+  const farmer = await farmerService.createFarmer(req.body);
+  successResponse(res, farmer, 200);
 }
 
 export async function getAll(req, res) {
@@ -71,7 +67,7 @@ export async function getFarmersByName(req, res, next) {
 export async function getFarmersByRoute(req, res, next) {
   try {
     const farmers = await farmerService.getFarmersByRoute(
-      parseInt(req.params.route)
+      parseInt(req.params.route),
     );
     return res.json(farmers);
   } catch (err) {

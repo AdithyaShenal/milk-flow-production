@@ -12,6 +12,7 @@ export const createFarmerSchema = Joi.object({
     .required(),
   route: Joi.number().integer().min(1).max(6).required(),
   shortName: Joi.string().required(),
+  pinNo: Joi.string().required(),
 });
 
 export const farmerIdSchema = Joi.object({
