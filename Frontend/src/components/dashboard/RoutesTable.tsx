@@ -91,7 +91,7 @@ export default function RoutesTable() {
                         value={percent}
                         max={100}
                       />
-                      <span className="inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold border border-base-200 bg-white min-w-[64px]">
+                      <span className="inline-flex items-center justify-center rounded-full px-3 py-1 text-xs font-semibold border border-base-200 bg-white min-w-16">
                         {percent}%
                       </span>
                     </div>

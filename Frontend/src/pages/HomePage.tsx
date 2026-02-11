@@ -6,12 +6,10 @@ import DistanceLineChart from "../components/dashboard//DistanceLineChart";
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto p-4 md:p-6">
+    <div className="min-h-screen">
+      <div className="mx-auto">
         <div className="mb-5">
-          <h1 className="text-2xl font-bold">
-            Milk Route Optimization Dashboard
-          </h1>
+          <p className="font-semibold text-sm mb-4">Dashboard</p>
         </div>
 
         <SummaryCards />

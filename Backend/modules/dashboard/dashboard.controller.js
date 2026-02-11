@@ -1,4 +1,4 @@
-import * as dashboardService from "./dashboard.service.js";
+import * as dashboardService from "./dashboard.services.js";
 
 export async function getDashboardData(req, res, next) {
   try {

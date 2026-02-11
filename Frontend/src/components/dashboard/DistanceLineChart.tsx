@@ -181,7 +181,7 @@ export default function DistanceLineChart() {
       </div>
 
       <div className="p-6">
-        <div className="rounded-2xl border border-base-200 bg-gradient-to-b from-white to-indigo-50/40 p-4">
+        <div className="rounded-2xl border border-base-200 bg-linear-to-b from-white to-indigo-50/40 p-4">
           <div className="mb-3">
             <RouteFilter active={active} onChange={setActive} />
           </div>

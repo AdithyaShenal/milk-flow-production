@@ -132,10 +132,10 @@ export default function MilkLineChart() {
     <div
       className="
         bg-white border border-base-200 rounded-2xl overflow-hidden
-        shadow-sm transition hover:shadow-md hover:-translate-y-[1px]
+        shadow-sm transition hover:shadow-md hover:-translate-y-px
       "
     >
-      <div className="px-6 py-5 border-b border-base-200 bg-gradient-to-r from-indigo-50 to-white">
+      <div className="px-6 py-5 border-b border-base-200 bg-linear-to-r from-indigo-50 to-white">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-semibold tracking-tight">
@@ -225,7 +225,7 @@ export default function MilkLineChart() {
       </div>
 
       <div className="p-6">
-        <div className="mt-4 rounded-2xl border border-base-200 bg-gradient-to-b from-white to-indigo-50/40 p-4">
+        <div className="mt-4 rounded-2xl border border-base-200 bg-linear-to-b from-white to-indigo-50/40 p-4">
           <div className="h-[340px]">
             <Line data={data} options={options} />
           </div>
