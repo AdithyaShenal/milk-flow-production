@@ -54,7 +54,7 @@ const FarmerPage = () => {
   if (isLoading) return <FullLoadingPage />;
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full h-[calc(100vh-6.5rem)] md:h-[calc(100vh-6.5rem)] flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <p className="font-semibold text-sm">Farmer Management</p>
         <button className="btn btn-primary btn-sm">
@@ -64,7 +64,7 @@ const FarmerPage = () => {
       </div>
 
       <form
-        className="flex items-center gap-4"
+        className="flex items-center gap-4 flex-wrap"
         onSubmit={handleSubmit(submitHandler)}
       >
         {/* Search bar */}
@@ -164,63 +164,65 @@ const FarmerPage = () => {
         </div>
       )}
 
-      {/* Modal */}
-
-      {/* Table */}
-      <div className="overflow-x-auto h-auto w-auto border border-base-300 rounded-sm">
-        <table className="table table-md table-pin-rows table-pin-cols">
-          <thead>
-            <tr>
-              <td>ID</td>
-              <td>Name</td>
-              <td>Address</td>
-              <td>Phone</td>
-              <td>Route</td>
-              <td>Location</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody className="overflow-y-scroll">
-            {data?.map((farmer) => (
-              <tr key={farmer._id} className="hover:bg-base-200 cursor-pointer">
-                <td>{farmer._id}</td>
-                <td>{farmer.name}</td>
-                <td>{farmer.address}</td>
-                <td>{farmer.phone ?? "N/A"}</td>
-                <td>{farmer.route}</td>
-                <td>N/A</td>
-                <td className="flex gap-2 justify-end">
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    onClick={() =>
-                      openMapModal({
-                        lat: farmer.location.lat,
-                        lng: farmer.location.lon,
-                      })
-                    }
-                  >
-                    <MapPin className="size-4" />
-                  </button>
-
-                  <button
-                    className="btn btn-warning btn-ghost btn-sm"
-                    onClick={() => openUpdateModal(farmer)}
-                  >
-                    <Pen className="size-4" />
-                  </button>
-
-                  <button
-                    className="btn btn-error btn-sm btn-ghost"
-                    onClick={() => openDeleteModal(farmer)}
-                  >
-                    <Trash className="size-4" />
-                  </button>
-                </td>
-                {}
+      {/* Table - Scrollable Container */}
+      <div className="flex-1 overflow-hidden border border-base-300 rounded-sm">
+        <div className="h-full overflow-auto">
+          <table className="table table-md table-pin-rows table-pin-cols">
+            <thead>
+              <tr>
+                <td>ID</td>
+                <td>Name</td>
+                <td>Address</td>
+                <td>Phone</td>
+                <td>Route</td>
+                <td>Location</td>
+                <td></td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data?.map((farmer) => (
+                <tr
+                  key={farmer._id}
+                  className="hover:bg-base-200 cursor-pointer"
+                >
+                  <td>{farmer._id}</td>
+                  <td>{farmer.name}</td>
+                  <td>{farmer.address}</td>
+                  <td>{farmer.phone ?? "N/A"}</td>
+                  <td>{farmer.route}</td>
+                  <td>N/A</td>
+                  <td className="flex gap-2 justify-end">
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() =>
+                        openMapModal({
+                          lat: farmer.location.lat,
+                          lng: farmer.location.lon,
+                        })
+                      }
+                    >
+                      <MapPin className="size-4" />
+                    </button>
+
+                    <button
+                      className="btn btn-warning btn-ghost btn-sm"
+                      onClick={() => openUpdateModal(farmer)}
+                    >
+                      <Pen className="size-4" />
+                    </button>
+
+                    <button
+                      className="btn btn-error btn-sm btn-ghost"
+                      onClick={() => openDeleteModal(farmer)}
+                    >
+                      <Trash className="size-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

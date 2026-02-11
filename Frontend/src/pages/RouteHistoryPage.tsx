@@ -34,18 +34,13 @@ const RouteHistoryPage = () => {
         </div>
       )}
 
-      <div className="flex w-full h-[600px] md:h-[600px] gap-4">
+      <div className="flex w-full h-[calc(100vh-6.5rem)] md:h-[calc(100vh-6.5rem)] gap-4">
         {/* Routes List */}
-        <div className="w-full md:w-1/2 h-full ring-1 ring-base-300 rounded-xs bg-base-100 flex flex-col">
-          {/* Header + Filter */}
-          <div className="flex flex-col md:flex-row items-center justify-between p-2 ml-2 border-b border-base-300">
-            <p className="text-xs font-semibold uppercase tracking-wide text-base-content">
-              History
-            </p>
-          </div>
+        <div className="w-full md:w-1/2 h-full rounded-xs bg-base-100 flex flex-col">
+          <p className="font-semibold text-sm mb-5">Routes History</p>
 
-          {/* Routes List */}
-          <div className="flex-1 p-4 overflow-y-auto">
+          {/* Routes List - Scrollable Container */}
+          <div className="flex-1 p-4 overflow-y-auto ring-1 ring-base-300 rounded-xs">
             {routes?.length === 0 && (
               <p className="text-slate-400 text-sm italic">
                 No history available yet

@@ -26,7 +26,7 @@ const DispatchedRoutes = () => {
   };
 
   return (
-    <>
+    <div className="h-full flex flex-col">
       {isDeleteError && (
         <div role="alert" className="alert alert-error mb-3">
           <svg
@@ -46,7 +46,7 @@ const DispatchedRoutes = () => {
         </div>
       )}
 
-      <div className="bg-base-100 border-base-300 p-6 overflow-y-scroll h-full">
+      <div className="flex-1 bg-base-100 border-base-300 p-6 overflow-y-auto">
         {isError && <p>{error.message}</p>}
 
         {routes?.length === 0 && (
@@ -64,7 +64,7 @@ const DispatchedRoutes = () => {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

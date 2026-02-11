@@ -17,6 +17,8 @@
     "axios": "^1.13.2",
     "chart.js": "^4.5.1",
     "daisyui": "^5.5.5",
+    "jspdf": "^4.1.0",
+    "jspdf-autotable": "^5.0.7",
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
     "lottie-react": "^2.4.1",

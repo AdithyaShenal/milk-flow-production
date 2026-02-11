@@ -30,7 +30,7 @@ const InProgressRoutes = () => {
   console.log(routesInProgress);
 
   return (
-    <>
+    <div className="h-full flex flex-col">
       {isInProgressError && (
         <div role="alert" className="alert alert-error mb-3">
           <svg
@@ -70,7 +70,8 @@ const InProgressRoutes = () => {
           <span>{deleteError.message}</span>
         </div>
       )}
-      <div className="bg-base-100 border-base-300 p-4 overflow-y-scroll h-full">
+
+      <div className="flex-1 bg-base-100 border-base-300 p-4 overflow-y-auto">
         {routesInProgress?.length === 0 && (
           <p className="text-gray-400 text-sm">
             <i>No In Progress routes available</i>
@@ -86,7 +87,7 @@ const InProgressRoutes = () => {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -35,7 +35,7 @@ const ProfilePage = () => {
       <div className="min-h-screen bg-base-100">
         <p className="font-semibold text-sm mb-4">Admin Profile Information</p>
 
-        <div className="bg-base-200 rounded-sm shadow-sm border border-base-300 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
+        <div className="bg-base-200 rounded-sm border border-base-300 p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8">
           <div className="flex items-center gap-5">
             <div className="avatar avatar-online rounded-full ring-2 ring-black/20">
               <div className="rounded-full">
@@ -60,7 +60,7 @@ const ProfilePage = () => {
           </button>
         </div>
 
-        <div className="bg-base-200 rounded-sm shadow-sm border border-base-300 text-base-content p-6 mb-8">
+        <div className="bg-base-200 rounded-sm border border-base-300 text-base-content p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold">Account Info</h3>
           </div>
@@ -109,7 +109,7 @@ const ProfilePage = () => {
           </div>
         </div>
 
-        <div className="bg-base-200 rounded-sm shadow-sm border border-base-300 p-6 mb-8">
+        <div className="bg-base-200 rounded-sm border border-base-300 p-6 mb-8">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-semibold">Personal Information</h3>
           </div>

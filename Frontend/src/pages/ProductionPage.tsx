@@ -56,11 +56,11 @@ const ProductionPage = () => {
   };
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full h-[calc(100vh-12rem)] md:h-[calc(100vh-6.5rem)] flex flex-col gap-4">
       <p className="font-semibold text-sm">Production Overview</p>
 
       <form
-        className="flex items-center gap-4"
+        className="flex items-center gap-4 flex-wrap"
         onSubmit={handleSubmit(submitHandler)}
       >
         {/* Search bar */}
@@ -171,65 +171,67 @@ const ProductionPage = () => {
         </div>
       )}
 
-      {/* Table */}
-      <div className="overflow-x-auto h-auto w-auto border  border-base-300 rounded-sm">
-        <table className="table table-md table-pin-rows table-pin-cols">
-          <thead>
-            <tr>
-              <td>Farmer ID</td>
-              <td>Name</td>
-              <td>Address</td>
-              <td>Production Volume</td>
-              <td>Status</td>
-              <td>Registration</td>
-              <td>Route</td>
-              <td></td>
-            </tr>
-          </thead>
-          <tbody className="overflow-y-scroll">
-            {data?.map((prod) => (
-              <tr
-                key={prod._id}
-                className={`hover:bg-base-200 cursor-pointer ${
-                  prod.blocked ? "bg-red-100" : ""
-                }`}
-              >
-                <td>{prod.farmer._id}</td>
-                <td>{prod.farmer.name}</td>
-                <td>{prod.farmer.address}</td>
-                <td>{prod.volume} L</td>
-                <td>{statusHandler(prod.status)}</td>
-                <td>{new Date(prod.registration_time).toLocaleString()}</td>
-                <td>{prod.farmer.route}</td>
-                <td className="flex gap-2 justify-end">
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    onClick={() =>
-                      openMapModal({
-                        lat: prod.farmer.location.lat,
-                        lng: prod.farmer.location.lon,
-                      })
-                    }
-                  >
-                    <MapPin className="size-4" />
-                  </button>
-                  <button
-                    className="btn btn-primary btn-ghost btn-sm"
-                    onClick={() => {
-                      if (prod.blocked) {
-                        openUnholdModal(prod);
-                      } else {
-                        openHoldModal(prod);
-                      }
-                    }}
-                  >
-                    <Lock className="size-4" />
-                  </button>
-                </td>
+      {/* Table - Scrollable Container */}
+      <div className="flex-1 overflow-hidden border border-base-300 rounded-sm">
+        <div className="h-full overflow-auto">
+          <table className="table table-md table-pin-rows table-pin-cols">
+            <thead>
+              <tr>
+                <td>Farmer ID</td>
+                <td>Name</td>
+                <td>Address</td>
+                <td>Production Volume</td>
+                <td>Status</td>
+                <td>Registration</td>
+                <td>Route</td>
+                <td></td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data?.map((prod) => (
+                <tr
+                  key={prod._id}
+                  className={`hover:bg-base-200 cursor-pointer ${
+                    prod.blocked ? "bg-red-500/20" : ""
+                  }`}
+                >
+                  <td>{prod.farmer._id}</td>
+                  <td>{prod.farmer.name}</td>
+                  <td>{prod.farmer.address}</td>
+                  <td>{prod.volume} L</td>
+                  <td>{statusHandler(prod.status)}</td>
+                  <td>{new Date(prod.registration_time).toLocaleString()}</td>
+                  <td>{prod.farmer.route}</td>
+                  <td className="flex gap-2 justify-end">
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={() =>
+                        openMapModal({
+                          lat: prod.farmer.location.lat,
+                          lng: prod.farmer.location.lon,
+                        })
+                      }
+                    >
+                      <MapPin className="size-4" />
+                    </button>
+                    <button
+                      className="btn btn-primary btn-ghost btn-sm"
+                      onClick={() => {
+                        if (prod.blocked) {
+                          openUnholdModal(prod);
+                        } else {
+                          openHoldModal(prod);
+                        }
+                      }}
+                    >
+                      <Lock className="size-4" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

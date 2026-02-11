@@ -5,6 +5,7 @@ import z from "zod";
 import useLogin from "../hooks/useLogin";
 import { useLottie } from "lottie-react";
 import loadingAnimation from "../assets/logo.json";
+import LoginImage from "../assets/images/Login_Image_2.webp";
 
 const schema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -50,15 +51,67 @@ export default function LoginPage() {
       <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-white">
         <div className="w-full max-w-md">
           {/* Logo/Brand */}
-          <div className="mb-10">
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-2xl font-bold text-gray-900">
-                Milk Flow Logistic System
+          <div className="mb-12">
+            {/* Heading */}
+            <div className="mb-3">
+              <h1 className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">
+                Milk Flow
               </h1>
+              <p className="text-base font-medium text-gray-700">
+                Logistic System
+              </p>
             </div>
-            <p className="text-gray-600 text-sm">
-              Log in to your account to continue
+
+            {/* Subtitle */}
+            <p className="text-sm text-gray-500 leading-relaxed">
+              Sign in to your account to manage and optimize your dairy supply
+              chain
             </p>
+          </div>
+
+          {/* Demo Credentials Banner */}
+          <div className="mb-6 p-4 bg-linear-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl">
+            <div className="flex items-start gap-3">
+              <div className="shrink-0 mt-0.5">
+                <svg
+                  className="w-5 h-5 text-blue-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-semibold text-blue-900 mb-2">
+                  Demo Account
+                </h3>
+                <p className="text-xs text-blue-700 mb-3">
+                  Use these credentials to explore the system:
+                </p>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="font-medium text-blue-800 w-20">
+                      Username:
+                    </span>
+                    <code className="px-2 py-1 bg-white rounded border border-blue-200 text-blue-900 font-mono">
+                      shenal
+                    </code>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <span className="font-medium text-blue-800 w-20">
+                      Password:
+                    </span>
+                    <code className="px-2 py-1 bg-white rounded border border-blue-200 text-blue-900 font-mono">
+                      12345678
+                    </code>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Error Message */}
@@ -249,19 +302,29 @@ export default function LoginPage() {
       </div>
 
       {/* Right Side - Hero Image/Illustration */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
+      <div
+        className="hidden lg:flex lg:w-1/2 relative overflow-hidden"
+        style={{
+          backgroundImage: `url(${LoginImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
+        {/* Gradient Overlay for better text readability */}
+
         {/* Content */}
-        <div className="relative z-10 flex flex-col items-center justify-center w-full">
-          <div className="flex flex-col text-center border border-black/10 rounded-lg shadow-lg m-20 p-20">
+        <div className="relative z-10 flex flex-col items-center justify-center w-full px-12">
+          <div className="flex flex-col text-center bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl p-12 max-w-xl">
             {/* Illustration/Icon */}
-            <div className="flex w-full justify-center items-center">
+            <div className="flex w-full justify-center items-center mb-6">
               {View}
             </div>
 
-            <h2 className="text-4xl font-bold mb-4">
-              Welcome to Milk Flow Logistics System
+            <h2 className="text-4xl font-bold mb-4 text-white drop-shadow-lg">
+              Welcome to Milk Flow
             </h2>
-            <p className="text-md text-base-content my-5">
+            <p className="text-lg text-white/90 leading-relaxed">
               Streamline your dairy management with our comprehensive platform.
               Track, analyze, and optimize your operations all in one place.
             </p>

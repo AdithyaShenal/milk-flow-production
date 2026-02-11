@@ -156,7 +156,9 @@ const Sidebar = () => {
               >
                 {/* Settings icon */}
                 <Route className="my-1.5 inline-block size-4" />
-                <span className="is-drawer-close:hidden">Route Control</span>
+                <span className="is-drawer-close:hidden">
+                  Routes Management
+                </span>
               </NavLink>
             </li>
 
@@ -178,7 +180,7 @@ const Sidebar = () => {
               >
                 {/* Settings icon */}
                 <History className="my-1.5 inline-block size-4" />
-                <span className="is-drawer-close:hidden">Route History</span>
+                <span className="is-drawer-close:hidden">Routes History</span>
               </NavLink>
             </li>
 
@@ -223,7 +225,9 @@ const Sidebar = () => {
                 >
                   {/* Settings icon */}
                   <UserStar className="my-1.5 inline-block size-4" />
-                  <span className="is-drawer-close:hidden">Configurations</span>
+                  <span className="is-drawer-close:hidden">
+                    Admin Management
+                  </span>
                 </NavLink>
               </li>
             )}
