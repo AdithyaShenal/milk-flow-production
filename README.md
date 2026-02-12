@@ -107,21 +107,6 @@ This repository includes:
 
 ---
 
-## 🛠️ Technology Stack
-
-| Layer | Technology |
-|-------|------------|
-| Backend | Node.js, Express |
-| Optimization Engine | Spring Boot |
-| Database | MongoDB |
-| Cache | Redis |
-| Web Frontend | React |
-| Mobile Apps | React + Capacitor |
-| API Communication | REST |
-| Deployment | Docker / Cloud VM |
-
----
-
 ## 🔐 Core Capabilities
 
 - VRP-based route optimization
