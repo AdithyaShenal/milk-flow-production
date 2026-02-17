@@ -6,11 +6,26 @@ services:
   nginx:
     restart: always
     image: adithyashenal/milkflow-nginx
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./nginx
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
     depends_on:
       - api
       - frontend
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./certbot/www:/var/www/certbot
+      - ./certbot/conf:/etc/letsencrypt
+    command: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   api:
     restart: unless-stopped
@@ -22,17 +37,26 @@ services:
 
   frontend:
     image: adithyashenal/milkflow-frontend
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./Backend
     environment:
       OSRM_URL: http://osrm:6000
 
   cvrp:
     image: adithyashenal/milkflow-cvrp
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./CVRP-service
     restart: always
     environment:
       OSRM_URL: http://osrm:6000
 
   osrm:
     image: adithyashenal/milkflow-osrm
+    # build:
+    #   dockerfile: Dockerfile.dev
+    #   context: ./Osrm
     container_name: osrm
     ports:
       - "6000:6000"

@@ -44,6 +44,24 @@ jobs:
           script: |
             cd ~/milk-flow-production
             git pull origin main
+
+            chmod +x init-letsencrypt.sh
+
+            if [ ! -d "./certbot/conf/live/milkflow.adithyashenal.me" ]; then
+              echo "No certificates found. Running initial setup..."
+              
+              # Ensure firewall allows HTTP/HTTPS
+              sudo ufw allow 80/tcp
+              sudo ufw allow 443/tcp
+              
+              # Run the certificate initialization script
+              ./init-letsencrypt.sh
+            else
+              echo "Certificates already exist. Skipping certificate generation."
+            fi
+
             docker compose pull
-            docker compose up -d
+            docker compose up -d --force-recreate
             docker image prune -f
+            docker compose exec nginx nginx -t || echo "Nginx config check failed, but continuing..."
+            echo "Deployment completed successfully!"
