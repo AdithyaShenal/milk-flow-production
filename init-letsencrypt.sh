@@ -19,6 +19,10 @@ if [ ! -e "$data_path/conf/options-ssl-nginx.conf" ] || [ ! -e "$data_path/conf/
   echo
 fi
 
+echo "### Using initial nginx config (HTTP only) for certificate generation ..."
+# Use the initial config that doesn't redirect to HTTPS
+cp nginx/default.initial.conf nginx/default.prod.conf
+
 # Create dummy certificate for nginx to start
 echo "### Creating dummy certificate for ${domains[0]} ..."
 path="/etc/letsencrypt/live/${domains[0]}"
@@ -30,13 +34,13 @@ docker compose run --rm --entrypoint "\
     -subj '/CN=localhost'" certbot
 echo
 
-# Start nginx
-echo "### Starting nginx ..."
+# Start nginx with initial config
+echo "### Starting nginx with HTTP-only config ..."
 docker compose up --force-recreate -d nginx
 echo
 
-# Wait for nginx to start
-sleep 5
+# Wait for nginx to fully start
+sleep 10
 
 # Delete dummy certificate
 echo "### Deleting dummy certificate for ${domains[0]} ..."
@@ -71,10 +75,21 @@ docker compose run --rm --entrypoint "\
     --agree-tos \
     --non-interactive \
     --force-renewal" certbot
+
+if [ $? -ne 0 ]; then
+  echo "### Certificate generation FAILED!"
+  exit 1
+fi
+
 echo
 
-# Reload nginx
-echo "### Reloading nginx ..."
+# Now restore the production config with HTTPS
+echo "### Restoring production nginx config (with HTTPS) ..."
+git checkout nginx/default.prod.conf
+
+# Reload nginx with the new config
+echo "### Reloading nginx with HTTPS config ..."
+docker compose up --force-recreate -d nginx
 docker compose exec nginx nginx -s reload
 
 echo "### Certificate setup completed successfully!"
