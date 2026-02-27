@@ -186,7 +186,7 @@ This repository includes:
     data_received..................: 16 MB  245 kB/s
     data_sent......................: 525 kB 8.2 kB/s
 ```
-## Comparison
+
 ## API Performance Test Results (k6)
 
 | Cache Status | VUs | Duration | Requests | Avg Duration | Median (p50) | 90th Percentile (p90) | 95th Percentile (p95) | Max Duration | Failed Requests |
