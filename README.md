@@ -140,7 +140,7 @@ This repository includes:
     data_sent......................: 1.0 MB 17 kB/s
 ```
 
-## Performance Testing Using Grafana K6 (With Redis Cache Disabled)
+## Performance Testing Using Grafana K6 (Without Redis Cache Disabled)
 ```language
 
          /\      Grafana   /‾‾/
@@ -162,7 +162,7 @@ This repository includes:
   █ THRESHOLDS
 
     http_req_duration
-    ✗ 'p(95)<500' p(95)=820.41ms
+    ✗ 'p(95)<500' p(95)=1.39s
 
     http_req_failed
     ✗ 'rate<0.1' rate=12.50%
@@ -171,20 +171,20 @@ This repository includes:
   █ TOTAL RESULTS
 
     HTTP
-    http_req_duration..............: avg=223.81ms min=1.61ms med=135.15ms max=1.8s  p(90)=605.11ms p(95)=820.41ms
-      { expected_response:true }...: avg=243.64ms min=2.82ms med=151.12ms max=1.8s  p(90)=658.63ms p(95)=851.44ms
-    http_req_failed................: 12.50% 1094 out of 8752
-    http_reqs......................: 8752   140.697934/s
+    http_req_duration..............: avg=636.46ms min=6.04ms   med=540.59ms max=3.96s  p(90)=1.11s p(95)=1.39s
+      { expected_response:true }...: avg=682.13ms min=122.19ms med=574.61ms max=3.96s  p(90)=1.16s p(95)=1.47s
+    http_req_failed................: 12.50% 514 out of 4112
+    http_reqs......................: 4112   63.950313/s
 
     EXECUTION
-    iteration_duration.............: avg=2.8s     min=1.83s  med=2.76s    max=4.57s p(90)=3.11s    p(95)=3.31s
-    iterations.....................: 1094   17.587242/s
-    vus............................: 12     min=12           max=50
-    vus_max........................: 50     min=50           max=50
+    iteration_duration.............: avg=6.1s     min=3.69s    med=5.63s    max=11.33s p(90)=9.01s p(95)=9.97s
+    iterations.....................: 514    7.993789/s
+    vus............................: 14     min=14          max=50
+    vus_max........................: 50     min=50          max=50
 
     NETWORK
-    data_received..................: 33 MB  537 kB/s
-    data_sent......................: 1.0 MB 17 kB/s
+    data_received..................: 16 MB  245 kB/s
+    data_sent......................: 525 kB 8.2 kB/s
 ```
 
 ## Academic Context
