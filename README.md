@@ -92,8 +92,9 @@ This repository includes:
 
 ---
 
-```language
 ## Performance Testing Using Grafana K6 (With Redis Cache Enabled)
+
+```language
 
          /\      Grafana   /‾‾/
     /\  /  \     |\  __   /  /
