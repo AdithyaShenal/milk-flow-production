@@ -186,6 +186,13 @@ This repository includes:
     data_received..................: 16 MB  245 kB/s
     data_sent......................: 525 kB 8.2 kB/s
 ```
+## Comparison
+## API Performance Test Results (k6)
+
+| Cache Status | VUs | Duration | Requests | Avg Duration | Median (p50) | 90th Percentile (p90) | 95th Percentile (p95) | Max Duration | Failed Requests |
+|-------------|-----|---------|---------|-------------|--------------|----------------------|----------------------|--------------|----------------|
+| With Cache  | 50  | 1 min   | 8,224   | 247 ms      | 142 ms       | 639 ms               | 922 ms               | 2.62 s       | 12.5%          |
+| Without Cache | 50 | 1 min   | 4,112   | 636 ms      | 541 ms       | 1.11 s               | 1.39 s               | 3.96 s       | 12.5%          |
 
 ## Academic Context
 
