@@ -1,10 +1,10 @@
-# 🥛 MilkFlow – Production Deployment Repository
+# MilkFlow – Production Deployment Repository
 
 **MilkFlow** – An Intelligent Dairy Supply Chain & VRP-Based Route Optimization System
 
 ---
 
-## 📌 Overview
+## Overview
 
 This repository contains the **final production deployment** of the MilkFlow system, integrating **all services** into a unified platform.
 
@@ -19,9 +19,9 @@ This repository includes the **backend, optimization engine, web dashboard, and 
 
 ---
 
-## 🧩 System Components
+## System Components
 
-### 1️⃣ Main Backend Service
+### 1️. Main Backend Service
 - **Technology:** Node.js + Express
 - **Database:** MongoDB (Mongoose)
 - **Cache:** Redis
@@ -31,14 +31,14 @@ This repository includes the **backend, optimization engine, web dashboard, and 
   - Route coordination
   - Integration with VRP engine
 
-### 2️⃣ VRP Optimization Service
+### 2️. VRP Optimization Service
 - **Technology:** Spring Boot
 - Handles:
   - Vehicle Routing Problem (VRP) algorithms
   - Depot-based route optimization
   - Capacity and distance constraints
 
-### 3️⃣ Admin Web Dashboard
+### 3️. Admin Web Dashboard
 - **Technology:** React
 - Provides:
   - Operational analytics
@@ -46,14 +46,14 @@ This repository includes the **backend, optimization engine, web dashboard, and 
   - Production monitoring
   - User management
 
-### 4️⃣ Farmer Mobile Application
+### 4️. Farmer Mobile Application
 - **Technology:** React + Capacitor
 - Features:
   - Production submissions
   - Collection tracking
   - Notifications
 
-### 5️⃣ Driver Mobile Application
+### 5️. Driver Mobile Application
 - **Technology:** React + Capacitor
 - Features:
   - Assigned route visualization
@@ -62,7 +62,7 @@ This repository includes the **backend, optimization engine, web dashboard, and 
 
 ---
 
-## 🚀 Deployment Architecture
+## Deployment Architecture
 
 This repository includes:
 
@@ -74,14 +74,14 @@ This repository includes:
 
 ---
 
-## 📦 Mobile Application Builds
+## Mobile Application Builds
 
 **APKs for Android:**  
 [Google Drive Link](https://drive.google.com/drive/folders/1MHDMqMoZ-yUtba8vVB5KJJG9Pbi-AwPr?usp=sharing)
 
 ---
 
-## 🔐 Core Capabilities
+## Core Capabilities
 
 - VRP-based route optimization
 - Role-based access control
@@ -92,7 +92,98 @@ This repository includes:
 
 ---
 
-## 🎓 Academic Context
+## Performance Testing Using Grafana K6 (With Redis Cache Enabled)
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: .\dev-load-test.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m30s max duration (incl. graceful stop):
+              * default: 50 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(95)<500' p(95)=820.41ms
+
+    http_req_failed
+    ✗ 'rate<0.1' rate=12.50%
+
+
+  █ TOTAL RESULTS
+
+    HTTP
+    http_req_duration..............: avg=223.81ms min=1.61ms med=135.15ms max=1.8s  p(90)=605.11ms p(95)=820.41ms
+      { expected_response:true }...: avg=243.64ms min=2.82ms med=151.12ms max=1.8s  p(90)=658.63ms p(95)=851.44ms
+    http_req_failed................: 12.50% 1094 out of 8752
+    http_reqs......................: 8752   140.697934/s
+
+    EXECUTION
+    iteration_duration.............: avg=2.8s     min=1.83s  med=2.76s    max=4.57s p(90)=3.11s    p(95)=3.31s
+    iterations.....................: 1094   17.587242/s
+    vus............................: 12     min=12           max=50
+    vus_max........................: 50     min=50           max=50
+
+    NETWORK
+    data_received..................: 33 MB  537 kB/s
+    data_sent......................: 1.0 MB 17 kB/s
+
+## Performance Testing Using Grafana K6 (With Redis Cache Enabled)
+
+
+         /\      Grafana   /‾‾/
+    /\  /  \     |\  __   /  /
+   /  \/    \    | |/ /  /   ‾‾\
+  /          \   |   (  |  (‾)  |
+ / __________ \  |_|\_\  \_____/
+
+
+     execution: local
+        script: .\dev-load-test.js
+        output: -
+
+     scenarios: (100.00%) 1 scenario, 50 max VUs, 1m30s max duration (incl. graceful stop):
+              * default: 50 looping VUs for 1m0s (gracefulStop: 30s)
+
+
+
+  █ THRESHOLDS
+
+    http_req_duration
+    ✗ 'p(95)<500' p(95)=820.41ms
+
+    http_req_failed
+    ✗ 'rate<0.1' rate=12.50%
+
+
+  █ TOTAL RESULTS
+
+    HTTP
+    http_req_duration..............: avg=223.81ms min=1.61ms med=135.15ms max=1.8s  p(90)=605.11ms p(95)=820.41ms
+      { expected_response:true }...: avg=243.64ms min=2.82ms med=151.12ms max=1.8s  p(90)=658.63ms p(95)=851.44ms
+    http_req_failed................: 12.50% 1094 out of 8752
+    http_reqs......................: 8752   140.697934/s
+
+    EXECUTION
+    iteration_duration.............: avg=2.8s     min=1.83s  med=2.76s    max=4.57s p(90)=3.11s    p(95)=3.31s
+    iterations.....................: 1094   17.587242/s
+    vus............................: 12     min=12           max=50
+    vus_max........................: 50     min=50           max=50
+
+    NETWORK
+    data_received..................: 33 MB  537 kB/s
+    data_sent......................: 1.0 MB 17 kB/s
+
+## Academic Context
 
 This project is the **Final Year Project (FYP)** of the  
 **Bachelor of Computer Science (BCS)**, **University of Ruhuna, Sri Lanka**.
@@ -100,7 +191,3 @@ This project is the **Final Year Project (FYP)** of the
 Focus: Applying **optimization algorithms to real-world dairy logistics** for efficiency and operational intelligence.
 
 ---
-
-## 📜 License
-
-This project is developed for **academic and research purposes**.
