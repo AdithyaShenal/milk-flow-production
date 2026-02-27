@@ -140,8 +140,8 @@ This repository includes:
     data_sent......................: 1.0 MB 17 kB/s
 ```
 
-## Performance Testing Using Grafana K6 (With Redis Cache Enabled)
-
+## Performance Testing Using Grafana K6 (With Redis Cache Disabled)
+```language
 
          /\      Grafana   /‾‾/
     /\  /  \     |\  __   /  /
@@ -185,6 +185,7 @@ This repository includes:
     NETWORK
     data_received..................: 33 MB  537 kB/s
     data_sent......................: 1.0 MB 17 kB/s
+```
 
 ## Academic Context
 
