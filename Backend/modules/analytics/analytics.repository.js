@@ -1,7 +1,5 @@
-import Route from "../routing/routing.model.js";
 import Production from "../production/production.model.js";
 import Trucks from "../fleet/fleet.model.js";
-import RouteConfig from "../routing/routing.config.model.js";
 
 export async function getTotalPendingProduction() {
   const result = await Production.aggregate([

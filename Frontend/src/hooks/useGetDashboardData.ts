@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import type { APIError } from "./useGetProductions";
 import { api } from "../services/apiClient";
+import type { AxiosError } from "axios";
+import type { APIError } from "./useGetProductions";
 
 export interface DashboardData {
   summaryCards: {
@@ -42,14 +42,9 @@ const useGetDashboardData = () => {
   return useQuery<DashboardData, AxiosError<APIError>>({
     queryKey: ["dashboard", "analytics"],
     queryFn: async () => {
-      const res = await api.get("/dashboard");
-      return res.data.data;
+      const res = await api.get("analytics/dashboard");
+      return res.data;
     },
-
-    staleTime: 5 * 60 * 1000,
-    refetchOnWindowFocus: false,
-    retry: 2,
-    retryDelay: 1000,
   });
 };
 

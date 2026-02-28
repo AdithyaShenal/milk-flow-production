@@ -1,12 +1,4 @@
 import * as productionService from "./poduction.service.js";
-import Production from "./production.model.js";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc.js";
-import timezone from "dayjs/plugin/timezone.js";
-import _ from "lodash";
-
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 export async function getProductions(req, res) {
   const {
@@ -16,37 +8,12 @@ export async function getProductions(req, res) {
     status = "all",
   } = req.query;
 
-  const query = {};
-
-  if (status !== "all") {
-    query.status = status;
-  }
-
-  if (search && filterBy === "name") {
-    query["farmer.name"] = {
-      $regex: search,
-      $options: "i",
-    };
-  }
-
-  if (search && filterBy === "id") {
-    query["farmer._id"] = search;
-  }
-
-  if (date) {
-    const start = new Date(date);
-    const end = new Date(date);
-    end.setHours(23, 59, 59, 999);
-
-    query.registration_time = {
-      $gte: start,
-      $lte: end,
-    };
-  }
-
-  const productions = await Production.find(query)
-    .populate("farmer")
-    .sort({ registration_time: -1 });
+  const productions = await productionService.searchProductions({
+    search,
+    filterBy,
+    date,
+    status,
+  });
 
   res.status(200).json(productions);
 }
@@ -86,7 +53,6 @@ export async function getMyProductionToday(req, res) {
   });
 }
 
-// Update submitted production
 export async function updateProductionController(req, res) {
   const farmer_id = req.user._id;
   const production_id = req.params.production_id;
@@ -95,13 +61,12 @@ export async function updateProductionController(req, res) {
   const production = await productionService.updateProductionService(
     farmer_id,
     production_id,
-    volume
+    volume,
   );
 
   res.status(200).json(production);
 }
 
-// Delete submitted production
 export async function deleteProductionController(req, res) {
   const farmer_id = req.user._id;
   const production_id = req.params.production_id;
@@ -131,7 +96,7 @@ export async function blockProduction(req, res) {
 export async function getProductionsByFarmerId(req, res, next) {
   try {
     const productions = await productionService.getProductionsByFarmerId(
-      req.params.farmer_id
+      req.params.farmer_id,
     );
     return res.json(productions);
   } catch (err) {
@@ -142,7 +107,7 @@ export async function getProductionsByFarmerId(req, res, next) {
 export async function getProductionsByRoute(req, res, next) {
   try {
     const productions = await productionService.getProductionsByRoute(
-      parseInt(req.params.route)
+      parseInt(req.params.route),
     );
     return res.json(productions);
   } catch (err) {

@@ -1,4 +1,6 @@
+import { Eye, ReceiptText, Trash } from "lucide-react";
 import type { Route } from "../../hooks/useGenerateRoutes";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   props: Route;
@@ -7,6 +9,12 @@ interface Props {
 }
 
 const RouteCard = ({ props, onClickRoute, onClickDelete }: Props) => {
+  const navigate = useNavigate();
+
+  const handleDetails = () => {
+    navigate("details", { state: { route: props } });
+  };
+
   return (
     <div
       className="
@@ -57,14 +65,22 @@ const RouteCard = ({ props, onClickRoute, onClickDelete }: Props) => {
           onClick={() => onClickRoute(props)}
           className="btn btn-neutral btn-sm"
         >
+          <Eye className="size-4" />
           View
         </button>
 
         <button
-          onClick={() => onClickDelete(props)}
-          className="btn btn-error btn-sm text-base-content"
+          className="btn btn-primary btn-sm btn-outline"
+          onClick={handleDetails}
         >
-          Delete
+          <ReceiptText className="size-4" />
+        </button>
+
+        <button
+          onClick={() => onClickDelete(props)}
+          className="btn btn-error btn-sm btn-outline"
+        >
+          <Trash className="size-4" />
         </button>
       </div>
     </div>

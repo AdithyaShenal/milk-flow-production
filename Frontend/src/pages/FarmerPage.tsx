@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { MapPin, Pen, Plus, Trash } from "lucide-react";
+import { MapPin, Pen, Trash } from "lucide-react";
 import useGetFarmers from "../hooks/useGetFarmers";
 import { useState } from "react";
 import MapModal from "../components/MapModal";
@@ -57,10 +57,6 @@ const FarmerPage = () => {
     <div className="w-full h-[calc(100vh-6.5rem)] md:h-[calc(100vh-6.5rem)] flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <p className="font-semibold text-sm">Farmer Management</p>
-        <button className="btn btn-primary btn-sm">
-          <Plus className="size-3" />
-          <p className="text-sm">Add Farmer</p>
-        </button>
       </div>
 
       <form

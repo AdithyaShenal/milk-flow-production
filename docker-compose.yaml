@@ -1,7 +1,7 @@
 services:
   redis:
     restart: always
-    image: redis:latest
+    image: redis:8.4.2
 
   nginx:
     restart: always
@@ -9,6 +9,7 @@ services:
     # build:
     #   dockerfile: Dockerfile
     #   context: ./nginx
+    # image: production-milkflow-nginx
     ports:
       - "80:80"
       - "443:443"
@@ -21,7 +22,7 @@ services:
     command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
 
   certbot:
-    image: certbot/certbot
+    image: certbot/certbot:v5.3.1
     volumes:
       - ./certbot/www:/var/www/certbot
       - ./certbot/conf:/etc/letsencrypt
@@ -30,6 +31,10 @@ services:
   api:
     restart: unless-stopped
     image: adithyashenal/milkflow-api
+    # build:
+    #   dockerfile: Dockerfile
+    #   context: ./Backend
+    # image: production-milkflow-api
     env_file:
       - .env
     depends_on:
@@ -39,7 +44,8 @@ services:
     image: adithyashenal/milkflow-frontend
     # build:
     #   dockerfile: Dockerfile
-    #   context: ./Backend
+    #   context: ./Frontend
+    # image: production-milkflow-frontend
     environment:
       OSRM_URL: http://osrm:6000
 
@@ -48,6 +54,7 @@ services:
     # build:
     #   dockerfile: Dockerfile
     #   context: ./CVRP-service
+    # image: production-milkflow-cvrp
     restart: always
     environment:
       OSRM_URL: http://osrm:6000
@@ -57,6 +64,7 @@ services:
     # build:
     #   dockerfile: Dockerfile.dev
     #   context: ./Osrm
+    # image: production-milkflow-osrm
     container_name: osrm
     ports:
       - "6000:6000"

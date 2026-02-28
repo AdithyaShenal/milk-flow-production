@@ -1,7 +1,5 @@
 import * as farmerService from "./farmer.service.js";
 import { successResponse } from "../../util/response.js";
-import mongoose from "mongoose";
-import Farmer from "./farmer.model.js";
 
 export async function createFarmer(req, res, next) {
   const farmer = await farmerService.createFarmer(req.body);
@@ -9,39 +7,18 @@ export async function createFarmer(req, res, next) {
 }
 
 export async function getAll(req, res) {
-  const farmers = await Farmer.find();
-
+  const farmers = await farmerService.getAllFarmers();
   res.status(200).json(farmers);
 }
 
 export async function getAllFarmers(req, res, next) {
   const { search = "", filterBy = "", route = "all" } = req.query;
 
-  const query = {};
-
-  if (route !== "all") {
-    query.route = Number(route);
-  }
-
-  if (search && filterBy === "name") {
-    query.name = {
-      $regex: search,
-      $options: "i",
-    };
-  }
-
-  if (search && filterBy === "address") {
-    query.address = {
-      $regex: search,
-      $options: "i",
-    };
-  }
-
-  if (search && filterBy === "id" && mongoose.Types.ObjectId.isValid(search)) {
-    query._id = search;
-  }
-
-  const farmers = await Farmer.find(query).sort({ createdAt: -1 });
+  const farmers = await farmerService.searchFarmers({
+    search,
+    filterBy,
+    route,
+  });
 
   return res.status(200).json(farmers);
 }

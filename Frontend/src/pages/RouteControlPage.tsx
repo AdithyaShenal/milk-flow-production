@@ -1,9 +1,19 @@
 import useMapStateStore from "../stores/useMapStateStore";
 import MapComponent from "./MapComponent";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useMatch } from "react-router-dom";
 
 const RouteControlPage = () => {
   const mapRoute = useMapStateStore((state) => state.mapRoute);
+
+  const isDetails = useMatch("/app/route_control/details");
+
+  if (isDetails) {
+    return (
+      <div className="h-[calc(100vh-6.5rem)]">
+        <Outlet />
+      </div>
+    );
+  }
 
   return (
     <div className="flex w-full h-[calc(100vh-6.5rem)] md:h-[calc(100vh-6.5rem)] gap-4">

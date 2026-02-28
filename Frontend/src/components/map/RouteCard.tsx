@@ -1,4 +1,6 @@
+import { Eye, ReceiptText } from "lucide-react";
 import type { Route } from "../../hooks/useGenerateRoutes";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   props: Route;
@@ -6,6 +8,12 @@ interface Props {
 }
 
 const RouteCard = ({ props, onClickRoute }: Props) => {
+  const navigate = useNavigate();
+
+  const handleDetails = () => {
+    navigate("details", { state: { route: props } });
+  };
+
   return (
     <div
       className="
@@ -52,9 +60,18 @@ const RouteCard = ({ props, onClickRoute }: Props) => {
       <div className="flex gap-2 mt-4">
         <button
           onClick={() => onClickRoute(props)}
-          className="btn btn-neutral btn-sm"
+          className="btn btn-neutral btn-sm "
         >
+          <Eye className="size-4" />
           View
+        </button>
+        {/* Details Button */}
+        <button
+          onClick={handleDetails}
+          className="btn btn-primary btn-sm btn-outline"
+        >
+          <ReceiptText className="size-4" />
+          Details
         </button>
       </div>
     </div>

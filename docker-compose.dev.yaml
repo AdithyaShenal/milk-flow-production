@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:latest
+    image: redis:8.4.2
     ports:
       - "6379:6379"
 
@@ -9,17 +9,19 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./nginx
+    image: dev-milkflow-nginx
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./nginx/certs:/etc/nginx/certs
     ports:
       - "3050:80"
-      - "443:443"
+      - "5000:443"
 
   api:
     build:
       dockerfile: Dockerfile.dev
       context: ./Backend
+    image: dev-milkflow-api
     env_file:
       - .env
     volumes:
@@ -32,6 +34,7 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./Frontend
+    image: dev-milkflow-frontend
     ports:
       - "3000:3000"
     volumes:
@@ -44,6 +47,7 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./CVRP-service
+    image: dev-milkflow-cvrp
     environment:
       OSRM_URL: http://osrm:6000
 
@@ -51,7 +55,7 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./Osrm
-    container_name: osrm
+    image: dev-milkflow-osrm
     ports:
       - "6000:6000"
     volumes:

@@ -1,7 +1,5 @@
 import * as fleetService from "./fleet.service.js";
 import { successResponse } from "../../util/response.js";
-import mongoose from "mongoose";
-import Truck from "./fleet.model.js";
 
 export async function createTruck(req, res, next) {
   try {
@@ -15,31 +13,7 @@ export async function createTruck(req, res, next) {
 export async function getAllTrucks(req, res, next) {
   const { search = "", filterBy = "", status = "all" } = req.query;
 
-  const query = {};
-
-  if (status !== "all") {
-    query.status = status;
-  }
-
-  if (search && filterBy === "model") {
-    query.model = {
-      $regex: search,
-      $options: "i",
-    };
-  }
-
-  if (search && filterBy === "license_no") {
-    query.license_no = {
-      $regex: search,
-      $options: "i",
-    };
-  }
-
-  if (search && filterBy === "id" && mongoose.Types.ObjectId.isValid(search)) {
-    query._id = search;
-  }
-
-  const trucks = await Truck.find(query).sort({ createdAt: -1 });
+  const trucks = await fleetService.searchTrucks({ search, filterBy, status });
 
   return res.status(200).json(trucks);
 }

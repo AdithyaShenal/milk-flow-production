@@ -3,13 +3,12 @@ import * as routingRepository from "./routing.repository.js";
 import * as errors from "../../errors/errors.js";
 import Route from "./routing.model.js";
 
-const EXTERNEL_URL = "http://localhost:8000";
 const CVRP_SERVICE_URL = process.env.CVRP_SERVICE_URL;
 
 export async function generateRoutesAuto() {
   const depot = await routingRepository.getDepotLocation();
-
   const productions = await routingRepository.getPendingProduction();
+  const availableTrucks = await routingRepository.getAllAvailableTrucks();
 
   // Handling Error
   if (productions.length === 0) {
@@ -17,8 +16,6 @@ export async function generateRoutesAuto() {
       "No pending productions available at this moment",
     );
   }
-
-  const availableTrucks = await routingRepository.getAllAvailableTrucks();
 
   if (availableTrucks.length === 0) {
     throw new errors.NotFoundError("No trucks available at this moment");
@@ -75,7 +72,6 @@ export async function generateRoutesAuto() {
 
   try {
     vrpResponse = await axios.post(
-      // "http://localhost:8000/route-optimize/auto",
       `${CVRP_SERVICE_URL}/api/routeOptimize/auto`,
       {
         coords,
@@ -251,7 +247,6 @@ export async function generateRouteWiseAll() {
 
   try {
     vrpResponse = await axios.post(
-      // "http://localhost:8000/route-optimize/route-wise/all",
       `${CVRP_SERVICE_URL}/api/routeOptimize/routeWise`,
       requestBody,
     );
@@ -378,7 +373,6 @@ export async function generateRouteWise(routeId) {
 
   try {
     vrpResponse = await axios.post(
-      // "http://localhost:8000/route-optimize/auto",
       `${CVRP_SERVICE_URL}/api/routeOptimize/auto`,
       {
         coords,

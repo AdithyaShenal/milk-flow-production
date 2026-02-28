@@ -69,7 +69,7 @@ const TruckManagement = () => {
           onClick={() => openAddModal()}
         >
           <Plus className="size-3" />
-          <p className="text-sm">Add Truck</p>
+          <p className="text-sm">Add</p>
         </button>
       </div>
 
@@ -117,12 +117,12 @@ const TruckManagement = () => {
         </select>
 
         {/* Search Button */}
-        <button className="btn btn-neutral" type="submit">
+        <button className="btn btn-neutral btn-md" type="submit">
           <span
             className={`${
               (isFetching || isLoading) && "loading"
             } loading-spinner`}
-          ></span>
+          />
           Search
         </button>
       </form>

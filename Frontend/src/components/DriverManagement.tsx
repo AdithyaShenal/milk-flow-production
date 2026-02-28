@@ -71,7 +71,7 @@ const DriverManagement = () => {
           onClick={() => openAddModal()}
         >
           <Plus className="size-3" />
-          <p className="text-sm">Add Driver</p>
+          <p className="text-sm">Add</p>
         </button>
       </div>
 

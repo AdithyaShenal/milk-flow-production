@@ -32,13 +32,11 @@ const NavBar = () => {
             <path d="M14 10l2 2l-2 2"></path>
           </svg>
         </label>
-        <div className="px-4 font-bold">
-          Supply & Logistic Management System
-        </div>
+        <div className="px-4 font-bold">Milk Flow Logistics System</div>
         <div className="ml-auto flex justify-center items-center gap-10 mr-2">
           <ThemeController />
 
-          <div className="dropdown dropdown-end cursor-pointer">
+          <div className="dropdown dropdown-end cursor-pointer z-9999">
             <div tabIndex={0} role="button" className="m-1">
               <div>
                 <div className="avatar avatar-online rounded-full ring-2 border border-base-300 hover:ring-black/50 transition-all duration-300">
@@ -48,7 +46,7 @@ const NavBar = () => {
                 </div>
               </div>
             </div>
-            <ul className="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-md border  border-base-300">
+            <ul className="dropdown-content menu bg-base-100 z-9999 rounded-box w-52 p-2 shadow-md border  border-base-300">
               <li>
                 <NavLink to="adminProfile">
                   <User className="size-4" />

@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../services/apiClient";
+import toast from "react-hot-toast";
 
 const useDeleteRoute = () => {
   const queryClient = useQueryClient();
@@ -11,6 +12,7 @@ const useDeleteRoute = () => {
     },
 
     onSuccess: () => {
+      toast.success("Route Deleted Successfully");
       queryClient.invalidateQueries({ queryKey: ["routes", "dispatched"] });
       queryClient.invalidateQueries({ queryKey: ["routes", "InProgress"] });
     },

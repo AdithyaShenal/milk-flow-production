@@ -1,4 +1,5 @@
 import joi from "joi";
+import * as errors from "../../errors/errors.js";
 
 export const createTruckSchema = joi.object({
   license_no: joi.string().required(),
@@ -20,7 +21,7 @@ export const updateTruckSchema = joi.object({
   license_no: joi.string().required(),
   capacity: joi.number().min(0).max(10000).required(),
   model: joi.string().required(),
-  distance_travelled: joi.string().required(),
+  distance_travelled: joi.number().required(),
   route: joi.number().integer().min(1).max(6).required(),
 });
 
@@ -51,7 +52,11 @@ export const toggleStatusSchema = joi.object({
 
 export const validateBody = (schema) => (req, res, next) => {
   const { error } = schema.validate(req.body);
-  if (error) return res.status(400).json({ error: error.details[0].message });
+
+  if (error) {
+    throw new errors.ValidationError(error.details[0].message);
+  }
+
   next();
 };
 

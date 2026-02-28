@@ -12,21 +12,14 @@ router.post(
   "/",
   farmerAuth,
   validate(productionValidator.submitProductionSchema),
-  productionController.submitProduction
-);
-
-// Update submitted production
-router.put(
-  "/:production_id",
-  farmerAuth,
-  productionController.updateProductionController
+  productionController.submitProduction,
 );
 
 // Delete submitted production
 router.delete(
   "/:production_id",
   farmerAuth,
-  productionController.deleteProductionController
+  productionController.deleteProductionController,
 );
 
 // Fetch today production by farmer
@@ -35,7 +28,12 @@ router.get("/today", farmerAuth, productionController.getMyProductionToday);
 // Get farmer collected/failed production
 router.get("/me", farmerAuth, productionController.getMyProductions);
 
-// ------------------------------------------------------ farmer application purpose
+// Update submitted production
+router.put(
+  "/:production_id",
+  farmerAuth,
+  productionController.updateProductionController,
+);
 
 router.get("/", productionController.getProductions);
 
@@ -49,14 +47,14 @@ router.patch("/block/:productionId", productionController.blockProduction);
 router.get(
   "/farmer/:farmer_id",
   validate(productionValidator.farmerIdSchema),
-  productionController.getProductionsByFarmerId
+  productionController.getProductionsByFarmerId,
 );
 
 // Fetch productions by route no
 router.get(
   "/route/:route",
   validate(productionValidator.productionRouteSchema),
-  productionController.getProductionsByRoute
+  productionController.getProductionsByRoute,
 );
 
 export default router;

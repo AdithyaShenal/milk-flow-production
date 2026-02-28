@@ -18,6 +18,7 @@ import PasswordResetPage from "../pages/PasswordResetPage";
 import ResetLayout from "../Layouts/ResetLayout";
 import InProgressRoutes from "../components/InProgressRoutes";
 import DispatchedRoutes from "../components/DispatchedRoutes";
+import RouteDetailsPage from "../pages/RouteDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -46,7 +47,11 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: "homePage", element: <HomePage /> },
       { path: "adminProfile", element: <AdminProfilePage /> },
-      { path: "routing", element: <RoutingPage /> },
+      {
+        path: "routing",
+        element: <RoutingPage />,
+        children: [{ path: "details", element: <RouteDetailsPage /> }],
+      },
       { path: "production", element: <ProductionPage /> },
       {
         path: "fleet",
@@ -54,11 +59,13 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <DriverManagement />,
+            // element: <DriverManagement />,
+            element: <TruckManagement />,
           },
           {
-            path: "trucks",
-            element: <TruckManagement />,
+            path: "drivers",
+            // element: <TruckManagement />,
+            element: <DriverManagement />,
           },
         ],
       },
@@ -71,9 +78,14 @@ const router = createBrowserRouter([
           { index: true, element: <InProgressRoutes /> },
           { path: "in-progress", element: <InProgressRoutes /> },
           { path: "dispatched", element: <DispatchedRoutes /> },
+          { path: "details", element: <RouteDetailsPage /> },
         ],
       },
-      { path: "route_history", element: <RouteHistoryPage /> },
+      {
+        path: "route_history",
+        element: <RouteHistoryPage />,
+        children: [{ path: "details", element: <RouteDetailsPage /> }],
+      },
       { path: "admin_control", element: <AdminControlPage /> },
     ],
   },

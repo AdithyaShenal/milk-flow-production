@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "../services/apiClient";
 import type { AxiosError } from "axios";
 import type { APIError } from "./useGetProductions";
+import toast from "react-hot-toast";
 
 interface LocationProps {
   depotCoords: {
@@ -20,6 +21,7 @@ const useUpdateDepotLocation = () => {
     },
 
     onSuccess: () => {
+      toast.success("Depot Location Updated");
       queryClient.invalidateQueries({ queryKey: ["config"] });
     },
   });

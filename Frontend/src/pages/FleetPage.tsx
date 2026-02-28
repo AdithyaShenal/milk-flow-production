@@ -9,10 +9,10 @@ const FleetPage = () => {
           <div className="breadcrumbs text-sm">
             <ul>
               <li>
-                <Link to=".">Drivers</Link>
+                <Link to=".">Trucks</Link>
               </li>
               <li>
-                <Link to="trucks">Trucks</Link>
+                <Link to="drivers">Drivers</Link>
               </li>
             </ul>
           </div>

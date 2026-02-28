@@ -1,262 +1,321 @@
+import Driver from "../driver/driver.model.js";
+import Farmer from "../farmer/farmer.model.js";
 import Production from "../production/production.model.js";
-import mongoose from "mongoose";
+import Route from "../routing/routing.model.js";
+import Trucks from "../fleet/fleet.model.js";
 
-export async function compileDashboardData(today) {
-  const startofDay = new Date(today.setHours(0, 0, 0, 0));
-  const startofMonths = new Date(today.getFullYear(), today.getMonth(), 1);
+export async function getDashboardData() {
+  const now = new Date();
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  );
+  const endOfToday = new Date(startOfToday);
+  endOfToday.setDate(endOfToday.getDate() + 1);
 
-  const [
-    todayCollection,
-    monthCollection,
-    weeklyData,
-    productionStats,
-    vehicleStats,
-    completedFailedRatio,
-    dailyProductionCount,
-  ] = await Promise.all([
-    getTodayCollection(startofDay),
-    getMonthCollection(startofMonths),
-    getWeeklyChartData(today),
-    getProductionStats(startofDay),
-    getVehiclePickupStats(startofDay),
-    getCompletedFailedRatio(startofDay),
-    getDailyProductionCount(today),
-  ]);
+  const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  return {
-    summaryCards: {
-      totalLitersToday: todayCollection.totalVolume,
-      totalLitersThisMonth: monthCollection.totalVolume,
-      avgPickupsPerVehicle: vehicleStats.avgPickups,
-      totalProductionPending: productionStats.pendingCount,
-    },
+  try {
+    // Parallel queries for optimal performance
+    const [
+      todayProduction,
+      todayRoutes,
+      last7DaysProduction,
+      last7DaysRoutes,
+      fleetStatus,
+      driverStatus,
+      totalFarmers,
+      totalDrivers,
+      totalTrucks,
+      activeRoutesCount,
+      allFarmers,
+    ] = await Promise.all([
+      Production.find({
+        registration_time: { $gte: startOfToday, $lt: endOfToday },
+      }).lean(),
 
-    weeklyCharts: {
-      litersPerDay: weeklyData.litersData,
-      distancePerDay: weeklyData.distanceData,
-      productionStatusRatio: {
-        completed: completedFailedRatio.completed,
-        failed: completedFailedRatio.failed,
-      },
-    },
+      Route.find({
+        createdAt: { $gte: startOfToday, $lt: endOfToday },
+      }).lean(),
 
-    additionalCharts: {
-      productionsPerDay: dailyProductionCount,
-      qualityTrends: await getQualityTrends(today),
-      routeEfficiency: await getRouteEfficiency(today),
-    },
+      Production.find({
+        registration_time: { $gte: sevenDaysAgo },
+      })
+        .sort({ registration_time: 1 })
+        .lean(),
 
-    rawData: {
-      todayDate: today.toISOString().split("T")[0],
-      weekStart: getWeekStartDate(today).toISOString().split("T")[0],
-      dataPoints: weeklyData.totalDataPoints,
-    },
-  };
-}
+      Route.find({
+        createdAt: { $gte: sevenDaysAgo },
+      })
+        .sort({ createdAt: 1 })
+        .lean(),
 
-async function getTodayCollection(startOfDay) {
-  const result = await Production.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: startOfDay },
-        status: "collected",
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        totalVolume: { $sum: "$collectedVolume" },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-
-  return {
-    totalVolume: result[0]?.totalVolume || 0,
-    totalCollections: result[0]?.count || 0,
-  };
-}
-
-async function getMonthCollection(startOfMonth) {
-  const result = await Production.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: startOfMonth },
-        status: "collected",
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        totalVolume: { $sum: "$collectedVolume" },
-      },
-    },
-  ]);
-
-  return {
-    totalVolume: result[0]?.totalVolume || 0,
-  };
-}
-
-async function getWeeklyChartData(today) {
-  const weekStart = getWeekStartDate(today);
-  const weekDays = generateWeekDates(weekStart);
-
-  const litersData = await Production.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: weekStart },
-        status: "collected",
-      },
-    },
-    {
-      $group: {
-        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-        totalLiters: { $sum: "$collectedVolume" },
-        totalDistance: {
-          $sum: {
-            $cond: [
-              { $ifNull: ["$collectionDistance", false] },
-              "$collectionDistance",
-              0,
-            ],
+      Trucks.aggregate([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
           },
         },
-      },
-    },
-    { $sort: { _id: 1 } },
-  ]);
+      ]),
 
-  // Format for Chart.js
-  const formattedLiters = weekDays.map((day) => {
-    const found = litersData.find((d) => d._id === day.dateStr);
-    return {
-      date: day.dateStr,
-      liters: found?.totalLiters || 0,
-      distance: found?.totalDistance || 0,
-    };
-  });
+      Driver.aggregate([
+        {
+          $group: {
+            _id: "$status",
+            count: { $sum: 1 },
+          },
+        },
+      ]),
 
-  return {
-    litersData: formattedLiters.map((d) => ({ x: d.date, y: d.liters })),
-    distanceData: formattedLiters.map((d) => ({ x: d.date, y: d.distance })),
-    totalDataPoints: litersData.length,
-  };
-}
+      Farmer.countDocuments(),
+      Driver.countDocuments(),
+      Trucks.countDocuments(),
+      Route.distinct("route"),
+      Farmer.find().select("route").lean(),
+    ]);
 
-async function getProductionStats(startOfDay) {
-  const [pending, collected, failed] = await Promise.all([
-    Production.countDocuments({
-      createdAt: { $gte: startOfDay },
-      status: "pending",
-    }),
-    Production.countDocuments({
-      createdAt: { $gte: startOfDay },
-      status: "collected",
-    }),
-    Production.countDocuments({
-      createdAt: { $gte: startOfDay },
-      status: "failed",
-    }),
-  ]);
+    // ──────────────────────────────────────────────────────────────────────
+    // TOP 4 METRICS
+    // ──────────────────────────────────────────────────────────────────────
 
-  return {
-    pendingCount: pending,
-    collectedCount: collected,
-    failedCount: failed,
-    totalToday: pending + collected + failed,
-  };
-}
+    const milkCollectedToday = todayProduction
+      .filter((p) => p.status === "collected")
+      .reduce((sum, p) => sum + (p.collectedVolume || p.volume || 0), 0);
 
-async function getVehiclePickupStats(startOfDay) {
-  return {
-    avgPickups: 8.5,
-    vehiclesActive: 6,
-    totalPickups: 51,
-  };
-}
+    const pendingRequestsToday = todayProduction.filter(
+      (p) => p.status === "pending" || p.status === "awaiting pickup",
+    ).length;
 
-async function getCompletedFailedRatio(startOfDay) {
-  const result = await Production.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: startOfDay },
-      },
-    },
-    {
-      $group: {
-        _id: "$status",
-        count: { $sum: 1 },
-      },
-    },
-  ]);
+    const completedRequestsToday = todayProduction.filter(
+      (p) => p.status === "collected",
+    ).length;
 
-  const completed = result.find((r) => r._id === "collected")?.count || 0;
-  const failed = result.find((r) => r._id === "failed")?.count || 0;
-  const total = completed + failed;
+    const totalRouteDistanceToday = todayRoutes.reduce(
+      (sum, r) => sum + (r.distance || 0),
+      0,
+    );
 
-  return {
-    completed: total > 0 ? Math.round((completed / total) * 100) : 0,
-    failed: total > 0 ? Math.round((failed / total) * 100) : 0,
-    total: total,
-  };
-}
+    // ──────────────────────────────────────────────────────────────────────
+    // MILK COLLECTION TREND (7 days)
+    // ──────────────────────────────────────────────────────────────────────
 
-async function getDailyProductionCount(today) {
-  const weekStart = getWeekStartDate(today);
+    const dailyData = new Map();
 
-  const result = await Production.aggregate([
-    {
-      $match: {
-        createdAt: { $gte: weekStart },
-      },
-    },
-    {
-      $group: {
-        _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt" } },
-        count: { $sum: 1 },
-      },
-    },
-    { $sort: { _id: 1 } },
-  ]);
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const dateStr = date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      dailyData.set(dateStr, { date: dateStr, volume: 0 });
+    }
 
-  return result.map((item) => ({
-    date: item._id,
-    productions: item.count,
-  }));
-}
+    last7DaysProduction
+      .filter((p) => p.status === "collected")
+      .forEach((p) => {
+        const dateStr = new Date(p.registration_time).toLocaleDateString(
+          "en-US",
+          {
+            month: "short",
+            day: "numeric",
+          },
+        );
 
-async function getQualityTrends(today) {
-  return {
-    avgFatContent: 4.2,
-    avgDensity: 1.031,
-    rejectionRate: 2.3,
-  };
-}
+        const day = dailyData.get(dateStr);
+        if (day) {
+          day.volume += p.collectedVolume || p.volume || 0;
+        }
+      });
 
-async function getRouteEfficiency(today) {
-  return {
-    mostEfficientRoute: 3,
-    avgCollectionTime: 3.5,
-    routeUtilization: 87,
-  };
-}
+    const milkCollectionTrend = Array.from(dailyData.values()).map((day) => ({
+      date: day.date,
+      volume: Math.round(day.volume),
+    }));
 
-function getWeekStartDate(date) {
-  const day = date.getDay();
-  const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
-  return new Date(date.setDate(diff));
-}
+    // ──────────────────────────────────────────────────────────────────────
+    // ROUTE STATUS BREAKDOWN
+    // ──────────────────────────────────────────────────────────────────────
 
-function generateWeekDates(startDate) {
-  const dates = [];
-  for (let i = 0; i < 7; i++) {
-    const date = new Date(startDate);
-    date.setDate(startDate.getDate() + i);
-    dates.push({
-      dateStr: date.toISOString().split("T")[0],
-      dayName: date.toLocaleDateString("en-US", { weekday: "short" }),
+    const routeStatusMap = new Map();
+    todayRoutes.forEach((r) => {
+      const status = r.status || "unknown";
+      routeStatusMap.set(status, (routeStatusMap.get(status) || 0) + 1);
     });
+
+    const routeStatusBreakdown = Array.from(routeStatusMap.entries()).map(
+      ([status, count]) => ({
+        status: status.charAt(0).toUpperCase() + status.slice(1),
+        count,
+      }),
+    );
+
+    // ──────────────────────────────────────────────────────────────────────
+    // FLEET STATUS
+    // ──────────────────────────────────────────────────────────────────────
+
+    const fleet = {
+      available: 0,
+      inService: 0,
+      unavailable: 0,
+    };
+
+    fleetStatus.forEach((item) => {
+      if (item._id === "available") fleet.available = item.count;
+      if (item._id === "inService") fleet.inService = item.count;
+      if (item._id === "unavailable") fleet.unavailable = item.count;
+    });
+
+    // ──────────────────────────────────────────────────────────────────────
+    // DRIVER STATUS
+    // ──────────────────────────────────────────────────────────────────────
+
+    const drivers = {
+      available: 0,
+      onDuty: 0,
+      unavailable: 0,
+    };
+
+    driverStatus.forEach((item) => {
+      if (item._id === "available") drivers.available = item.count;
+      if (item._id === "onDuty") drivers.onDuty = item.count;
+      if (item._id === "unavailable") drivers.unavailable = item.count;
+    });
+
+    // ──────────────────────────────────────────────────────────────────────
+    // FARMERS BY ROUTE - For radar chart
+    // ──────────────────────────────────────────────────────────────────────
+
+    const farmersPerRouteMap = new Map();
+
+    allFarmers.forEach((farmer) => {
+      const route = farmer.route || 0;
+      farmersPerRouteMap.set(route, (farmersPerRouteMap.get(route) || 0) + 1);
+    });
+
+    const farmersByRoute = Array.from(farmersPerRouteMap.entries())
+      .map(([route, farmers]) => ({
+        route: `Route ${route}`,
+        farmers,
+      }))
+      .sort((a, b) => {
+        const aNum = parseInt(a.route.replace("Route ", ""));
+        const bNum = parseInt(b.route.replace("Route ", ""));
+        return aNum - bNum;
+      });
+
+    // ──────────────────────────────────────────────────────────────────────
+    // VEHICLE-WISE VOLUME ALLOCATION - For today
+    // ──────────────────────────────────────────────────────────────────────
+
+    const vehicleVolumeMap = new Map();
+
+    todayRoutes.forEach((route) => {
+      const vehicle = route.license_no || "Unknown";
+
+      if (!vehicleVolumeMap.has(vehicle)) {
+        vehicleVolumeMap.set(vehicle, { volume: 0, stops: 0 });
+      }
+
+      const vehicleData = vehicleVolumeMap.get(vehicle);
+
+      // Calculate total volume from route stops
+      const routeVolume = (route.stops || [])
+        .filter(
+          (stop) =>
+            stop.production &&
+            (stop.production.status === "collected" ||
+              stop.production.status === "success"),
+        )
+        .reduce((sum, stop) => {
+          return (
+            sum +
+            (stop.production.collectedVolume || stop.production.volume || 0)
+          );
+        }, 0);
+
+      vehicleData.volume += routeVolume;
+      vehicleData.stops += (route.stops || []).filter(
+        (s) => s.production !== null,
+      ).length;
+    });
+
+    const vehicleVolumeAllocation = Array.from(vehicleVolumeMap.entries())
+      .map(([vehicle, data]) => ({
+        vehicle,
+        volume: Math.round(data.volume),
+        stops: data.stops,
+      }))
+      .sort((a, b) => b.volume - a.volume);
+
+    // ──────────────────────────────────────────────────────────────────────
+    // SYSTEM METRICS
+    // ──────────────────────────────────────────────────────────────────────
+
+    const systemMetrics = {
+      totalFarmers,
+      totalDrivers,
+      totalTrucks,
+      activeRoutes: activeRoutesCount.length,
+    };
+
+    // ──────────────────────────────────────────────────────────────────────
+    // WEEKLY DISTANCE TREND
+    // ──────────────────────────────────────────────────────────────────────
+
+    const dailyDistanceMap = new Map();
+
+    for (let i = 6; i >= 0; i--) {
+      const date = new Date(now.getTime() - i * 24 * 60 * 60 * 1000);
+      const dateStr = date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+      dailyDistanceMap.set(dateStr, 0);
+    }
+
+    last7DaysRoutes.forEach((route) => {
+      const dateStr = new Date(route.createdAt).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      });
+
+      if (dailyDistanceMap.has(dateStr)) {
+        dailyDistanceMap.set(
+          dateStr,
+          dailyDistanceMap.get(dateStr) + (route.distance || 0),
+        );
+      }
+    });
+
+    const weeklyDistanceTrend = Array.from(dailyDistanceMap.entries()).map(
+      ([date, distance]) => ({
+        date,
+        distance: Math.round(distance / 1000), // Convert to km
+      }),
+    );
+
+    // ──────────────────────────────────────────────────────────────────────
+    // RETURN DASHBOARD DATA
+    // ──────────────────────────────────────────────────────────────────────
+
+    return {
+      milkCollectedToday: Math.round(milkCollectedToday),
+      pendingRequestsToday,
+      completedRequestsToday,
+      totalRouteDistanceToday: Math.round(totalRouteDistanceToday),
+      milkCollectionTrend,
+      routeStatusBreakdown,
+      fleetStatus: fleet,
+      driverStatus: drivers,
+      farmersByRoute,
+      vehicleVolumeAllocation,
+      systemMetrics,
+      weeklyDistanceTrend,
+    };
+  } catch (error) {
+    console.error("Dashboard service error:", error);
+    throw error;
   }
-  return dates;
 }

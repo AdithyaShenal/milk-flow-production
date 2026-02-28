@@ -11,7 +11,7 @@ const defaultValues = {
   search: "",
   filterBy: "",
   date: "",
-  status: "pending",
+  status: "all",
 };
 
 type ProductionModalState =
@@ -192,7 +192,7 @@ const ProductionPage = () => {
                 <tr
                   key={prod._id}
                   className={`hover:bg-base-200 cursor-pointer ${
-                    prod.blocked ? "bg-red-500/20" : ""
+                    prod.blocked ? "bg-red-500/10" : ""
                   }`}
                 >
                   <td>{prod.farmer._id}</td>
@@ -215,7 +215,7 @@ const ProductionPage = () => {
                       <MapPin className="size-4" />
                     </button>
                     <button
-                      className="btn btn-primary btn-ghost btn-sm"
+                      className="btn btn-warning btn-ghost btn-sm"
                       onClick={() => {
                         if (prod.blocked) {
                           openUnholdModal(prod);

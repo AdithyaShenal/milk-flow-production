@@ -14,7 +14,6 @@ export async function create(data) {
 export async function update(id, data) {
   return await Trucks.findByIdAndUpdate(id, data, {
     new: true,
-    //tells us to return the updated document
   });
 }
 
@@ -30,7 +29,6 @@ export async function findTrucksByRoute(route) {
   return await Trucks.find({ route });
 }
 
-//toggle truck availability
 export async function toggleStatus(truckId, status) {
   return await Trucks.findByIdAndUpdate(
     truckId,
@@ -39,6 +37,6 @@ export async function toggleStatus(truckId, status) {
         status: status,
       },
     },
-    { new: true }
+    { new: true },
   );
 }

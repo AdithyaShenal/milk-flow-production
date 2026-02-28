@@ -3,15 +3,26 @@ import { useState } from "react";
 import RouteCard from "../components/map/RouteCard";
 import useGetHistory from "../hooks/useGetHistory";
 import type { Route } from "../hooks/useGenerateRoutes";
+import { Outlet, useMatch } from "react-router-dom";
 
 const RouteHistoryPage = () => {
   const [mapRoute, setMapRoute] = useState<Route>();
 
   const { data: routes, isError, error } = useGetHistory();
 
+  const isDetails = useMatch("/app/route_history/details");
+
   const handleClick = (props: Route) => {
     setMapRoute(props);
   };
+
+  if (isDetails) {
+    return (
+      <div className="h-[calc(100vh-6.5rem)]">
+        <Outlet />
+      </div>
+    );
+  }
 
   return (
     <>

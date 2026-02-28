@@ -5,6 +5,9 @@ import RouteCardAdvance from "../components/map/RouteCardAdvance";
 import MiniDashboard from "../components/MiniDashboard";
 import useDispatchRoutes from "../hooks/useDispatchRoutes";
 import useGenerateRoutes, { type Route } from "../hooks/useGenerateRoutes";
+import { ArrowBigUpDash, Waypoints } from "lucide-react";
+import { Outlet, useMatch } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const RoutingPage = () => {
   const [mapRoute, setMapRoute] = useState<Route>();
@@ -39,7 +42,22 @@ const RoutingPage = () => {
         : ["routes", "auto"],
       (old) => old?.filter((r) => r.license_no !== route.license_no),
     );
+    toast.success("Route Deleted.");
   };
+
+  const handleDeleteAll = () => {
+    queryClient.setQueryData<Route[]>(["routes", "auto"], []);
+  };
+
+  const isDetails = useMatch("/app/routing/details");
+
+  if (isDetails) {
+    return (
+      <div className="h-[calc(100vh-6.5rem)]">
+        <Outlet />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -48,10 +66,11 @@ const RoutingPage = () => {
 
         <MiniDashboard />
         <div className="flex flex-wrap items-center gap-3 border border-base-300 px-4 py-3 rounded-sm bg-base-200">
-          <button className="btn btn-neutral btn-sm" onClick={() => refetch()}>
+          <button className="btn btn-primary btn-sm" onClick={() => refetch()}>
             {isFetching && (
               <span className="loading loading-spinner loading-xs" />
             )}
+            <Waypoints className="size-4" />
             Generate Optimized Routes
           </button>
 
@@ -79,16 +98,18 @@ const RoutingPage = () => {
           )}
 
           <button
-            className="btn btn-secondary btn-sm ml-auto"
+            className="btn btn-neutral btn-sm ml-auto"
             onClick={() => {
               if (!routes)
-                return alert("Please generate optimized routes first");
+                return toast.error("Please generate optimized routes first");
               saveRoutes(routes);
+              handleDeleteAll();
             }}
           >
             {isPending && (
               <span className="loading loading-spinner loading-xs" />
             )}
+            <ArrowBigUpDash className="size-4" />
             Dispatch
           </button>
         </div>
