@@ -365,7 +365,7 @@ export default function DashboardPage() {
                   nameKey="status"
                   className="text-xs fill-base-content"
                 >
-                  {data.routeStatusBreakdown.map((entry, index) => {
+                  {data.routeStatusBreakdown.map((_, index) => {
                     const colors = [
                       CHART_COLORS.success,
                       CHART_COLORS.warning,
