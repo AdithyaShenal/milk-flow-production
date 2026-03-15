@@ -179,17 +179,17 @@ export async function updateProductionService(
     "stops.production._id": production_id,
   });
 
-  if (route) {
-    const stopIndex = route.stops.findIndex(
-      (stop) => stop.production?._id.toString() === production_id.toString(),
-    );
+  // if (route) {
+  //   const stopIndex = route.stops.findIndex(
+  //     (stop) => stop.production?._id.toString() === production_id.toString(),
+  //   );
 
-    if (stopIndex !== -1) {
-      route.stops[stopIndex].production = production.toObject();
-      route.markModified(`stops.${stopIndex}.production`);
-      await route.save();
-    }
-  }
+  //   if (stopIndex !== -1) {
+  //     route.stops[stopIndex].production = production.toObject();
+  //     route.markModified(`stops.${stopIndex}.production`);
+  //     await route.save();
+  //   }
+  // }
 
   await invalidateProductionCaches(farmer_id, production.farmer?.route);
 
