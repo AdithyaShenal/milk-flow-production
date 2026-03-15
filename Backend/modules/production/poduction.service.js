@@ -102,35 +102,51 @@ export async function getMyProductions(farmer_id) {
   return productions;
 }
 
+// export async function getMyProductionToday(farmer_id) {
+//   // const key = PRODUCTION_KEYS.TODAY_BY_FARMER(farmer_id);
+
+//   // // Must read raw to distinguish "cached null" from "cache miss"
+//   // const redis = getRedisClient();
+//   // const raw = await redis.get(String(key));
+
+//   // if (raw !== null) {
+//   //   return JSON.parse(raw); // could be null (sentinel) or actual object
+//   // }
+
+//   // const existing = await productionRepository.isExistsTodayProd(farmer_id);
+
+//   // if (existing) {
+//   //   const production = _.pick(existing, [
+//   //     "_id",
+//   //     "volume",
+//   //     "status",
+//   //     "registration_time",
+//   //     "failure_reason",
+//   //     "collectedVolume",
+//   //     "blocked",
+//   //   ]);
+//   //   await cacheSet(key, production, TTL.TODAY_PROD);
+//   //   return production;
+//   // }
+
+//   // await cacheSet(key, null, TTL.TODAY_PROD);
+//   // return null;
+// }
+
 export async function getMyProductionToday(farmer_id) {
-  const key = PRODUCTION_KEYS.TODAY_BY_FARMER(farmer_id);
-
-  // Must read raw to distinguish "cached null" from "cache miss"
-  const redis = getRedisClient();
-  const raw = await redis.get(String(key));
-
-  if (raw !== null) {
-    return JSON.parse(raw); // could be null (sentinel) or actual object
-  }
-
   const existing = await productionRepository.isExistsTodayProd(farmer_id);
 
-  if (existing) {
-    const production = _.pick(existing, [
-      "_id",
-      "volume",
-      "status",
-      "registration_time",
-      "failure_reason",
-      "collectedVolume",
-      "blocked",
-    ]);
-    await cacheSet(key, production, TTL.TODAY_PROD);
-    return production;
-  }
+  if (!existing) return null;
 
-  await cacheSet(key, null, TTL.TODAY_PROD);
-  return null;
+  return _.pick(existing, [
+    "_id",
+    "volume",
+    "status",
+    "registration_time",
+    "failure_reason",
+    "collectedVolume",
+    "blocked",
+  ]);
 }
 
 export async function updateProductionService(
@@ -140,54 +156,44 @@ export async function updateProductionService(
 ) {
   if (volume <= 0) throw new errors.BadRequestError("Volume cannot be 0");
 
-  // const session = await mongoose.startSession();
-  // session.startTransaction();
+  const production = await Production.findOne(
+    { _id: production_id, "farmer._id": farmer_id },
+    null,
+  );
 
-  try {
-    const production = await Production.findOne(
-      { _id: production_id, "farmer._id": farmer_id },
-      null,
+  if (!production) throw new Error("Production not found");
+
+  const LOCKED_STATUSES = ["collected", "failed"];
+
+  if (LOCKED_STATUSES.includes(production.status)) {
+    throw new errors.BadRequestError(
+      `Cannot update production that is already ${production.status}`,
+    );
+  }
+
+  production.volume = volume;
+  await production.save();
+
+  // Only update if we have a Route that included this production
+  const route = await Route.findOne({
+    "stops.production._id": production_id,
+  });
+
+  if (route) {
+    const stopIndex = route.stops.findIndex(
+      (stop) => stop.production?._id.toString() === production_id.toString(),
     );
 
-    if (!production) throw new Error("Production not found");
-
-    const LOCKED_STATUSES = ["collected", "failed"];
-    if (LOCKED_STATUSES.includes(production.status)) {
-      throw new errors.BadRequestError(
-        `Cannot update production that is already ${production.status}`,
-      );
+    if (stopIndex !== -1) {
+      route.stops[stopIndex].production = production.toObject();
+      route.markModified(`stops.${stopIndex}.production`);
+      await route.save();
     }
-
-    production.volume = volume;
-    await production.save();
-
-    const route = await Route.findOne({
-      "stops.production._id": production_id,
-    });
-
-    if (route) {
-      const stopIndex = route.stops.findIndex(
-        (stop) => stop.production?._id.toString() === production_id.toString(),
-      );
-
-      if (stopIndex !== -1) {
-        route.stops[stopIndex].production = production.toObject();
-        route.markModified(`stops.${stopIndex}.production`);
-        await route.save();
-      }
-    }
-
-    // await session.commitTransaction();
-    // session.endSession();
-
-    await invalidateProductionCaches(farmer_id, production.farmer?.route);
-
-    return production;
-  } catch (err) {
-    // await session.abortTransaction();
-    // session.endSession();
-    throw err;
   }
+
+  await invalidateProductionCaches(farmer_id, production.farmer?.route);
+
+  return production;
 }
 
 export async function deleteProductionService(farmer_id, production_id) {
