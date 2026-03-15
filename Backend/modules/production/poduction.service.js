@@ -140,14 +140,13 @@ export async function updateProductionService(
 ) {
   if (volume <= 0) throw new errors.BadRequestError("Volume cannot be 0");
 
-  const session = await mongoose.startSession();
-  session.startTransaction();
+  // const session = await mongoose.startSession();
+  // session.startTransaction();
 
   try {
     const production = await Production.findOne(
       { _id: production_id, "farmer._id": farmer_id },
       null,
-      { session },
     );
 
     if (!production) throw new Error("Production not found");
@@ -160,33 +159,33 @@ export async function updateProductionService(
     }
 
     production.volume = volume;
-    await production.save({ session });
+    await production.save();
 
-    const route = await Route.findOne(
-      { "stops.production._id": production_id },
-      null,
-      { session },
-    );
+    const route = await Route.findOne({
+      "stops.production._id": production_id,
+    });
 
     if (route) {
-      route.stops = route.stops.map((stop) => {
-        if (stop.production?._id.toString() === production_id.toString()) {
-          return { ...stop.toObject(), production: production.toObject() };
-        }
-        return stop;
-      });
-      await route.save({ session });
+      const stopIndex = route.stops.findIndex(
+        (stop) => stop.production?._id.toString() === production_id.toString(),
+      );
+
+      if (stopIndex !== -1) {
+        route.stops[stopIndex].production = production.toObject();
+        route.markModified(`stops.${stopIndex}.production`);
+        await route.save();
+      }
     }
 
-    await session.commitTransaction();
-    session.endSession();
+    // await session.commitTransaction();
+    // session.endSession();
 
     await invalidateProductionCaches(farmer_id, production.farmer?.route);
 
     return production;
   } catch (err) {
-    await session.abortTransaction();
-    session.endSession();
+    // await session.abortTransaction();
+    // session.endSession();
     throw err;
   }
 }
