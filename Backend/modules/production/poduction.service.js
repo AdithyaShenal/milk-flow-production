@@ -133,12 +133,79 @@ export async function getMyProductions(farmer_id) {
 //   // return null;
 // }
 
+// export async function getMyProductionToday(farmer_id) {
+//   const existing = await productionRepository.isExistsTodayProd(farmer_id);
+
+//   if (!existing) return null;
+
+//   return _.pick(existing, [
+//     "_id",
+//     "volume",
+//     "status",
+//     "registration_time",
+//     "failure_reason",
+//     "collectedVolume",
+//     "blocked",
+//   ]);
+// }
+
+// export async function updateProductionService(
+//   farmer_id,
+//   production_id,
+//   volume,
+// ) {
+//   if (volume <= 0) throw new errors.BadRequestError("Volume cannot be 0");
+
+//   const production = await Production.findOne(
+//     { _id: production_id, "farmer._id": farmer_id },
+//     null,
+//   );
+
+//   if (!production) throw new Error("Production not found");
+
+//   const LOCKED_STATUSES = ["collected", "failed"];
+
+//   if (LOCKED_STATUSES.includes(production.status)) {
+//     throw new errors.BadRequestError(
+//       `Cannot update production that is already ${production.status}`,
+//     );
+//   }
+
+//   production.volume = volume;
+//   await production.save();
+
+//   // Only update if we have a Route that included this production
+//   const route = await Route.findOne({
+//     "stops.production._id": production_id,
+//   });
+
+//   // if (route) {
+//   //   const stopIndex = route.stops.findIndex(
+//   //     (stop) => stop.production?._id.toString() === production_id.toString(),
+//   //   );
+
+//   //   if (stopIndex !== -1) {
+//   //     route.stops[stopIndex].production = production.toObject();
+//   //     route.markModified(`stops.${stopIndex}.production`);
+//   //     await route.save();
+//   //   }
+//   // }
+
+//   await invalidateProductionCaches(farmer_id, production.farmer?.route);
+
+//   return production;
+// }
+
 export async function getMyProductionToday(farmer_id) {
+  // Always fetch fresh from DB, no cache
   const existing = await productionRepository.isExistsTodayProd(farmer_id);
 
   if (!existing) return null;
 
-  return _.pick(existing, [
+  // CRITICAL: Convert Mongoose doc to plain object
+  const plain = existing.toObject ? existing.toObject() : existing;
+
+  return _.pick(plain, [
     "_id",
     "volume",
     "status",
@@ -156,44 +223,35 @@ export async function updateProductionService(
 ) {
   if (volume <= 0) throw new errors.BadRequestError("Volume cannot be 0");
 
-  const production = await Production.findOne(
-    { _id: production_id, "farmer._id": farmer_id },
-    null,
+  // Use atomic update instead of find + save
+  const production = await Production.findOneAndUpdate(
+    {
+      _id: production_id,
+      "farmer._id": farmer_id,
+      status: { $nin: ["collected", "failed"] },
+    },
+    { $set: { volume: volume } },
+    { new: true }, // Return updated document
   );
 
-  if (!production) throw new Error("Production not found");
-
-  const LOCKED_STATUSES = ["collected", "failed"];
-
-  if (LOCKED_STATUSES.includes(production.status)) {
+  if (!production) {
     throw new errors.BadRequestError(
-      `Cannot update production that is already ${production.status}`,
+      "Production not found or already collected/failed",
     );
   }
 
-  production.volume = volume;
-  await production.save();
-
-  // Only update if we have a Route that included this production
-  const route = await Route.findOne({
-    "stops.production._id": production_id,
-  });
-
-  // if (route) {
-  //   const stopIndex = route.stops.findIndex(
-  //     (stop) => stop.production?._id.toString() === production_id.toString(),
-  //   );
-
-  //   if (stopIndex !== -1) {
-  //     route.stops[stopIndex].production = production.toObject();
-  //     route.markModified(`stops.${stopIndex}.production`);
-  //     await route.save();
-  //   }
-  // }
-
   await invalidateProductionCaches(farmer_id, production.farmer?.route);
 
-  return production;
+  // Return plain object
+  return {
+    _id: production._id,
+    volume: production.volume,
+    status: production.status,
+    registration_time: production.registration_time,
+    failure_reason: production.failure_reason,
+    collectedVolume: production.collectedVolume,
+    blocked: production.blocked,
+  };
 }
 
 export async function deleteProductionService(farmer_id, production_id) {
