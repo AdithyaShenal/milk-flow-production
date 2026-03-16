@@ -200,10 +200,10 @@ const DriverManagement = () => {
             <tr>
               <td>ID</td>
               <td>Name</td>
+              <td>Email</td>
               <td>Phone</td>
               <td>License</td>
               <td>Status</td>
-              <td>Current Truck</td>
               <td></td>
               <td></td>
             </tr>
@@ -213,10 +213,10 @@ const DriverManagement = () => {
               <tr key={driver._id} className="hover:bg-base-200 cursor-pointer">
                 <td>{driver._id}</td>
                 <td>{driver.name}</td>
+                <td>{driver.email}</td>
                 <td>{driver.phone}</td>
                 <td>{driver.driver_license_no}</td>
                 <td>{statusHandler(driver.status)}</td>
-                <td>N/A</td>
                 <td>
                   {isPending && (
                     <span className="loading loading-ring loading-md"></span>

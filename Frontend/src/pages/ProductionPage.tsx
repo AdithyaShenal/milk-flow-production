@@ -108,7 +108,7 @@ const ProductionPage = () => {
           <option disabled={true}> Select by status</option>
           <option value="all">All</option>
           <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
+          <option value="collected">Collected</option>
           <option value="failed">Failed</option>
           <option value="awaiting pickup">Awaiting pickup</option>
         </select>

@@ -35,8 +35,10 @@ export async function getDashboardData() {
         registration_time: { $gte: startOfToday, $lt: endOfToday },
       }).lean(),
 
+      // FIX: Get today's routes that are completed or in progress
       Route.find({
         createdAt: { $gte: startOfToday, $lt: endOfToday },
+        status: { $in: ["completed", "inProgress"] },
       }).lean(),
 
       Production.find({
@@ -45,8 +47,10 @@ export async function getDashboardData() {
         .sort({ registration_time: 1 })
         .lean(),
 
+      // FIX: Get last 7 days completed routes for distance trends
       Route.find({
         createdAt: { $gte: sevenDaysAgo },
+        status: "completed",
       })
         .sort({ createdAt: 1 })
         .lean(),
@@ -72,9 +76,18 @@ export async function getDashboardData() {
       Farmer.countDocuments(),
       Driver.countDocuments(),
       Trucks.countDocuments(),
-      Route.distinct("route"),
+      // FIX: Active routes are dispatched or inProgress
+      Route.countDocuments({
+        status: { $in: ["dispatched", "inProgress"] },
+      }),
       Farmer.find().select("route").lean(),
     ]);
+
+    console.log("📊 Dashboard Debug:");
+    console.log("Today Production:", todayProduction.length);
+    console.log("Today Routes (completed/inProgress):", todayRoutes.length);
+    console.log("Last 7 Days Production:", last7DaysProduction.length);
+    console.log("Last 7 Days Routes (completed):", last7DaysRoutes.length);
 
     // ──────────────────────────────────────────────────────────────────────
     // TOP 4 METRICS
@@ -92,9 +105,16 @@ export async function getDashboardData() {
       (p) => p.status === "collected",
     ).length;
 
+    // FIX: Calculate distance from routes
     const totalRouteDistanceToday = todayRoutes.reduce(
       (sum, r) => sum + (r.distance || 0),
       0,
+    );
+
+    console.log(
+      "Total Route Distance Today:",
+      totalRouteDistanceToday,
+      "meters",
     );
 
     // ──────────────────────────────────────────────────────────────────────
@@ -135,21 +155,38 @@ export async function getDashboardData() {
     }));
 
     // ──────────────────────────────────────────────────────────────────────
-    // ROUTE STATUS BREAKDOWN
+    // ROUTE STATUS BREAKDOWN - FIX: Use correct enum values
     // ──────────────────────────────────────────────────────────────────────
 
-    const routeStatusMap = new Map();
-    todayRoutes.forEach((r) => {
-      const status = r.status || "unknown";
+    // Get ALL routes from today (not just completed/inProgress)
+    const allTodayRoutes = await Route.find({
+      createdAt: { $gte: startOfToday, $lt: endOfToday },
+    }).lean();
+
+    const routeStatusMap = new Map([
+      ["dispatched", 0],
+      ["inProgress", 0],
+      ["completed", 0],
+      ["canceled", 0],
+    ]);
+
+    allTodayRoutes.forEach((r) => {
+      const status = r.status || "dispatched";
       routeStatusMap.set(status, (routeStatusMap.get(status) || 0) + 1);
     });
 
-    const routeStatusBreakdown = Array.from(routeStatusMap.entries()).map(
-      ([status, count]) => ({
-        status: status.charAt(0).toUpperCase() + status.slice(1),
+    // Only include statuses with count > 0
+    const routeStatusBreakdown = Array.from(routeStatusMap.entries())
+      .filter(([_, count]) => count > 0)
+      .map(([status, count]) => ({
+        status:
+          status === "inProgress"
+            ? "In Progress"
+            : status.charAt(0).toUpperCase() + status.slice(1),
         count,
-      }),
-    );
+      }));
+
+    console.log("Route Status Breakdown:", routeStatusBreakdown);
 
     // ──────────────────────────────────────────────────────────────────────
     // FLEET STATUS
@@ -162,9 +199,11 @@ export async function getDashboardData() {
     };
 
     fleetStatus.forEach((item) => {
-      if (item._id === "available") fleet.available = item.count;
-      if (item._id === "inService") fleet.inService = item.count;
-      if (item._id === "unavailable") fleet.unavailable = item.count;
+      const status = (item._id || "").toLowerCase();
+      if (status === "available") fleet.available = item.count;
+      if (status === "inservice" || status === "in service")
+        fleet.inService = item.count;
+      if (status === "unavailable") fleet.unavailable = item.count;
     });
 
     // ──────────────────────────────────────────────────────────────────────
@@ -178,13 +217,15 @@ export async function getDashboardData() {
     };
 
     driverStatus.forEach((item) => {
-      if (item._id === "available") drivers.available = item.count;
-      if (item._id === "onDuty") drivers.onDuty = item.count;
-      if (item._id === "unavailable") drivers.unavailable = item.count;
+      const status = (item._id || "").toLowerCase();
+      if (status === "available") drivers.available = item.count;
+      if (status === "onduty" || status === "on duty")
+        drivers.onDuty = item.count;
+      if (status === "unavailable") drivers.unavailable = item.count;
     });
 
     // ──────────────────────────────────────────────────────────────────────
-    // FARMERS BY ROUTE - For radar chart
+    // FARMERS BY ROUTE
     // ──────────────────────────────────────────────────────────────────────
 
     const farmersPerRouteMap = new Map();
@@ -206,10 +247,16 @@ export async function getDashboardData() {
       });
 
     // ──────────────────────────────────────────────────────────────────────
-    // VEHICLE-WISE VOLUME ALLOCATION - For today
+    // VEHICLE-WISE VOLUME ALLOCATION - FIX: Use today's routes
     // ──────────────────────────────────────────────────────────────────────
 
     const vehicleVolumeMap = new Map();
+
+    console.log(
+      "Processing",
+      todayRoutes.length,
+      "routes for vehicle allocation...",
+    );
 
     todayRoutes.forEach((route) => {
       const vehicle = route.license_no || "Unknown";
@@ -220,25 +267,27 @@ export async function getDashboardData() {
 
       const vehicleData = vehicleVolumeMap.get(vehicle);
 
-      // Calculate total volume from route stops
-      const routeVolume = (route.stops || [])
-        .filter(
-          (stop) =>
-            stop.production &&
-            (stop.production.status === "collected" ||
-              stop.production.status === "success"),
-        )
-        .reduce((sum, stop) => {
-          return (
-            sum +
-            (stop.production.collectedVolume || stop.production.volume || 0)
-          );
-        }, 0);
+      // Calculate total volume from collected stops
+      const collectedStops = (route.stops || []).filter((stop) => {
+        return stop.production && stop.production.status === "collected";
+      });
+
+      console.log(`Route ${vehicle}: ${collectedStops.length} collected stops`);
+
+      const routeVolume = collectedStops.reduce((sum, stop) => {
+        const vol =
+          stop.production.collectedVolume || stop.production.volume || 0;
+        return sum + vol;
+      }, 0);
 
       vehicleData.volume += routeVolume;
       vehicleData.stops += (route.stops || []).filter(
         (s) => s.production !== null,
       ).length;
+
+      console.log(
+        `  ${vehicle}: ${vehicleData.volume}L from ${vehicleData.stops} stops`,
+      );
     });
 
     const vehicleVolumeAllocation = Array.from(vehicleVolumeMap.entries())
@@ -249,6 +298,8 @@ export async function getDashboardData() {
       }))
       .sort((a, b) => b.volume - a.volume);
 
+    console.log("Vehicle Volume Allocation:", vehicleVolumeAllocation);
+
     // ──────────────────────────────────────────────────────────────────────
     // SYSTEM METRICS
     // ──────────────────────────────────────────────────────────────────────
@@ -257,11 +308,11 @@ export async function getDashboardData() {
       totalFarmers,
       totalDrivers,
       totalTrucks,
-      activeRoutes: activeRoutesCount.length,
+      activeRoutes: activeRoutesCount,
     };
 
     // ──────────────────────────────────────────────────────────────────────
-    // WEEKLY DISTANCE TREND
+    // WEEKLY DISTANCE TREND - FIX: Use completed routes from last 7 days
     // ──────────────────────────────────────────────────────────────────────
 
     const dailyDistanceMap = new Map();
@@ -275,6 +326,12 @@ export async function getDashboardData() {
       dailyDistanceMap.set(dateStr, 0);
     }
 
+    console.log(
+      "Processing",
+      last7DaysRoutes.length,
+      "completed routes for weekly distance...",
+    );
+
     last7DaysRoutes.forEach((route) => {
       const dateStr = new Date(route.createdAt).toLocaleDateString("en-US", {
         month: "short",
@@ -282,9 +339,11 @@ export async function getDashboardData() {
       });
 
       if (dailyDistanceMap.has(dateStr)) {
+        const distanceMeters = route.distance || 0;
+        console.log(`  Route on ${dateStr}: ${distanceMeters}m`);
         dailyDistanceMap.set(
           dateStr,
-          dailyDistanceMap.get(dateStr) + (route.distance || 0),
+          dailyDistanceMap.get(dateStr) + distanceMeters,
         );
       }
     });
@@ -292,9 +351,11 @@ export async function getDashboardData() {
     const weeklyDistanceTrend = Array.from(dailyDistanceMap.entries()).map(
       ([date, distance]) => ({
         date,
-        distance: Math.round(distance / 1000), // Convert to km
+        distance: Math.round(distance / 1000), // Convert meters to km
       }),
     );
+
+    console.log("Weekly Distance Trend:", weeklyDistanceTrend);
 
     // ──────────────────────────────────────────────────────────────────────
     // RETURN DASHBOARD DATA
@@ -315,7 +376,7 @@ export async function getDashboardData() {
       weeklyDistanceTrend,
     };
   } catch (error) {
-    console.error("Dashboard service error:", error);
+    console.error("❌ Dashboard service error:", error);
     throw error;
   }
 }

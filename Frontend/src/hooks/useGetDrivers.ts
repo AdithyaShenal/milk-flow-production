@@ -11,6 +11,7 @@ export interface Driver {
   driver_license_no: string;
   shortName: string;
   pinNo: string;
+  email?: string;
 }
 
 interface QueryParams {

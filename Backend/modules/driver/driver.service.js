@@ -3,6 +3,7 @@ import * as errors from "../../errors/errors.js";
 import Driver from "./driver.model.js";
 import { cacheGet, cacheSet, cacheDel, delByPrefix } from "../../lib/redis.js";
 import { DRIVER_KEYS, TTL } from "../../lib/cacheKeys.js";
+import { sendEmail } from "../../util/sendEmail.js";
 
 async function invalidateDriverCaches(driver) {
   await Promise.all([
@@ -101,6 +102,19 @@ export async function createDriver(data) {
   }
 
   const driver = await driverRepository.create({ ...data, pinNo: pin });
+
+  await sendEmail({
+    to: data.email,
+    subject: "Your Driver Account Created",
+    text: `
+            Hello ${data.name},
+  
+            Your Driver account has been created.
+  
+            Username: ${data.shortName}
+            Your Password: ${pin}
+          `,
+  });
 
   await Promise.all([
     cacheDel(DRIVER_KEYS.ALL_DRIVERS),

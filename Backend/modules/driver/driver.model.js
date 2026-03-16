@@ -10,9 +10,9 @@ const driverSchema = new mongoose.Schema({
     match: /^\d{10}$/,
   },
   status: {
-    type: String, // remove inService
+    type: String,
     enum: ["available", "unavailable", "onDuty"],
-    default: "available", // available
+    default: "available",
   },
   driver_license_no: {
     type: String,
@@ -26,6 +26,10 @@ const driverSchema = new mongoose.Schema({
   pinNo: {
     type: String,
     required: true,
+  },
+  email: {
+    type: String,
+    unique: true,
   },
 });
 

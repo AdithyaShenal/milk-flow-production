@@ -10,6 +10,7 @@ export const createDriverSchema = joi.object({
   driver_license_no: joi.string().required(),
   status: joi.string().valid("available", "unavailable", "onDuty").optional(),
   shortName: joi.string().required(),
+  email: joi.string().optional(),
 });
 
 export const updateDriverSchema = joi.object({

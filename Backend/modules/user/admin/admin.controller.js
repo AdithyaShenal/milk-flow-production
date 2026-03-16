@@ -203,6 +203,7 @@ export const createAdmin = async (req, res) => {
           Please log in and change your password immediately.
         `,
   });
+
   successResponse(
     res,
     _.pick(newAdmin, ["_id", "name", "username", "email", "role"]),

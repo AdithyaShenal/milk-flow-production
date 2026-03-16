@@ -16,6 +16,7 @@ const schema = z.object({
     .string()
     .min(8, "Driver license number must be at least 8 characters"),
   phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  email: z.email(),
 });
 
 type DriverFormData = z.infer<typeof schema>;
@@ -107,6 +108,24 @@ const AddDriver = ({ open, onClose, title }: Props) => {
                   {errors.name && (
                     <p className="text-sm text-red-600">
                       {errors.name.message}
+                    </p>
+                  )}
+                </td>
+              </tr>
+
+              {/* Email */}
+              <tr>
+                <th className="text-left w-1/4 py-2">Email</th>
+                <td className="py-2">
+                  <input
+                    {...register("email")}
+                    type="email"
+                    className="input input-bordered w-full"
+                    placeholder="eg:- silva@gmail.com"
+                  />
+                  {errors.email && (
+                    <p className="text-sm text-red-600">
+                      {errors.email.message}
                     </p>
                   )}
                 </td>
