@@ -16,11 +16,6 @@ import {
 import {
   AreaChart,
   Area,
-  BarChart,
-  Bar,
-  PieChart,
-  Pie,
-  Cell,
   LineChart,
   Line,
   XAxis,
