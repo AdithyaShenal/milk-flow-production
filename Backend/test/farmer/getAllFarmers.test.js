@@ -27,7 +27,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 4. Tests
+// Tests
 describe("Farmer Controller Tests", () => {
   const validFarmer = {
     name: "John Doe",
@@ -62,7 +62,6 @@ describe("Farmer Controller Tests", () => {
     });
   });
 
-  // This section addresses your specific failure in getAllFarmers.test.js
   describe("GET /farmers/all", () => {
     test("should handle database errors", async () => {
       // Setup the mock to reject
@@ -74,7 +73,6 @@ describe("Farmer Controller Tests", () => {
 
       expect(res.statusCode).toBe(500);
 
-      // FIX: Changed .error to .message to match the error handler above
       expect(res.body.message).toBe("Database error");
       expect(res.body.status).toBe("error");
     });
