@@ -1,6 +1,7 @@
 import * as farmerRepository from "./farmer.repository.js";
 import { cacheGet, cacheSet, cacheDel, delByPrefix } from "../../lib/redis.js";
 import { PRODUCTION_KEYS, FARMER_KEYS, TTL } from "../../lib/cacheKeys.js";
+import { ConflictError } from "../../errors/errors.js";
 
 async function invalidateFarmerListCaches(route = null) {
   const deletes = [
@@ -70,7 +71,7 @@ export async function createFarmer(data) {
     if (existing.phone === data.phone)
       throw new ConflictError("Phone number already exists");
     if (existing.shortName === data.shortName)
-      throw new ConflictError("Short name already exists");
+      throw new ConflictError("Username already exists");
   }
 
   const farmer = await farmerRepository.create(data);
