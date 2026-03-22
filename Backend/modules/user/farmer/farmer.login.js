@@ -26,7 +26,7 @@ router.post("/login", async (req, res) => {
   if (!user) {
     return res
       .status(400)
-      .json({ success: false, message: "Invalid PIN or name" });
+      .json({ success: false, message: "Invalid Username or Password" });
   }
 
   const token = jwt.sign(

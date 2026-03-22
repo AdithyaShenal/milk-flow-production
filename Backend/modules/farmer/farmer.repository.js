@@ -1,10 +1,14 @@
 import Farmer from "./farmer.model.js";
 
 export async function create(data) {
-  const farmer = new Farmer({
-    ...data,
-  });
+  const farmer = new Farmer({ ...data });
   return await farmer.save();
+}
+
+export async function findByPhoneOrShortName(phone, shortName) {
+  return await Farmer.findOne({
+    $or: [{ phone }, { shortName }],
+  });
 }
 
 export async function findAll() {

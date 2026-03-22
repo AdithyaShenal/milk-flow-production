@@ -1,9 +1,9 @@
 import * as farmerService from "./farmer.service.js";
 import { successResponse } from "../../util/response.js";
 
-export async function createFarmer(req, res, next) {
+export async function createFarmer(req, res) {
   const farmer = await farmerService.createFarmer(req.body);
-  successResponse(res, farmer, 200);
+  return successResponse(res, farmer, 200);
 }
 
 export async function getAll(req, res) {
@@ -11,7 +11,7 @@ export async function getAll(req, res) {
   res.status(200).json(farmers);
 }
 
-export async function getAllFarmers(req, res, next) {
+export async function getAllFarmers(req, res) {
   const { search = "", filterBy = "", route = "all" } = req.query;
 
   const farmers = await farmerService.searchFarmers({

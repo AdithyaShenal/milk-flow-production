@@ -61,8 +61,22 @@ export async function searchFarmers({
 }
 
 export async function createFarmer(data) {
+  const existing = await farmerRepository.findByPhoneOrShortName(
+    data.phone,
+    data.shortName,
+  );
+
+  if (existing) {
+    if (existing.phone === data.phone)
+      throw new ConflictError("Phone number already exists");
+    if (existing.shortName === data.shortName)
+      throw new ConflictError("Short name already exists");
+  }
+
   const farmer = await farmerRepository.create(data);
+
   await invalidateFarmerListCaches(data.route);
+
   return farmer;
 }
 
