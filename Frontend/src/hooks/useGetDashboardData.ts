@@ -4,45 +4,29 @@ import type { AxiosError } from "axios";
 import type { APIError } from "./useGetProductions";
 
 export interface DashboardData {
-  summaryCards: {
-    totalLitersToday: number;
-    totalLitersThisMonth: number;
-    avgPickupsPerVehicle: number;
-    totalProductionPending: number;
+  milkCollectedToday: number;
+  pendingRequestsToday: number;
+  completedRequestsToday: number;
+  totalRouteDistanceToday: number;
+
+  systemMetrics: {
+    totalFarmers: number;
+    totalDrivers: number;
+    totalTrucks: number;
+    activeRoutes: number;
   };
+
+  // REAL WEEKLY DATA FROM BACKEND
   weeklyCharts: {
-    litersPerDay: Array<{ x: string; y: number }>;
-    distancePerDay: Array<{ x: string; y: number }>;
-    productionStatusRatio: {
-      completed: number;
-      failed: number;
-    };
-  };
-  additionalCharts: {
-    productionsPerDay: Array<{ date: string; productions: number }>;
-    qualityTrends: {
-      avgFatContent: number;
-      avgDensity: number;
-      rejectionRate: number;
-    };
-    routeEfficiency: {
-      mostEfficientRoute: number;
-      avgCollectionTime: number;
-      routeUtilization: number;
-    };
-  };
-  rawData: {
-    todayDate: string;
-    weekStart: string;
-    dataPoints: number;
+    litersPerDay: { x: string; y: number }[];
   };
 }
 
 const useGetDashboardData = () => {
   return useQuery<DashboardData, AxiosError<APIError>>({
-    queryKey: ["dashboard", "analytics"],
+    queryKey: ["dashboard"],
     queryFn: async () => {
-      const res = await api.get("analytics/dashboard");
+      const res = await api.get("/dashboard"); // correct endpoint
       return res.data;
     },
   });
